@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!-- Defines the HTML document type. -->
+<!-- Main HTML document -->
+<html lang="en">
+    <!-- Page metadata and resource links -->
+    <head>
+        <!-- Browser metadata / responsive configuration -->
+        <meta charset="utf-8">
+        <!-- Browser metadata / responsive configuration -->
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <!-- Browser tab title -->
+        <title>
+            Register | CreditBridge
+        </title>
+        <!-- External stylesheet or linked resource -->
+        <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <!-- Visible page content -->
+    <body>
+        <!-- Site header -->
+        <header>
+            <!-- Page navigation -->
+            <nav class="nav">
+                <!-- Link to index.html -->
+                <a class="brand" href="index.html">
+                    CREDIT
+                    <!-- Bold brand emphasis -->
+                    <b>
+                        BRIDGE.
+                    </b>
+                </a>
+                <!-- Layout or content wrapper: links -->
+                <div class="links">
+                    <!-- Link to index.html -->
+                    <a href="index.html">
+                        Home
+                    </a>
+                    <!-- Link to how-it-works.html -->
+                    <a href="how-it-works.html">
+                        How it works
+                    </a>
+                    <!-- Link to apply.html -->
+                    <a href="apply.html">
+                        New application
+                    </a>
+                    <!-- Link to login.html -->
+                    <a href="login.html" id="loginNav">
+                        Login
+                    </a>
+                    <!-- Link to register.html -->
+                    <a href="register.html" id="registerNav">
+                        Register
+                    </a>
+                    <!-- Link to # -->
+                    <a href="#" id="logoutNav" class="hidden">
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </header>
+        <!-- Primary page content -->
+        <main>
+        <!-- Easy return link to the main CreditBridge homepage -->
+        <div class="home-return">
+            <a href="index.html" aria-label="Back to CreditBridge home page">← Back to Home</a>
+        </div>
+
+            <!-- Page content section: wrap -->
+            <section class="wrap">
+                <!-- Layout or content wrapper: panel form -->
+                <div class="panel form">
+                    <!-- Layout or content wrapper: role-selection -->
+                    <div id="roleSelection" class="role-selection">
+                        <!-- Layout or content wrapper: thd-heading -->
+                        <div class="thd-heading">
+                            TECHNISCHE HOCHSCHULE
+                            <!-- Important emphasized text -->
+                            <strong>
+                                DEGGENDORF · THD
+                            </strong>
+                        </div>
+                        <!-- Text paragraph -->
+                        <p class="muted">
+                            Continue as ...
+                        </p>
+                        <!-- Link to register.html?role=student -->
+                        <a class="role-choice" href="register.html?role=student">
+                            Student
+                        </a>
+                        <!-- Link to login.html?role=employee -->
+                        <a class="role-choice" href="login.html?role=employee">
+                            Employee
+                        </a>
+                        <!-- Text paragraph -->
+                        <p class="small muted">
+                            CreditBridge demo, not the official THD identity provider.
+                        </p>
+                    </div>
+                    <!-- Layout or content wrapper: hidden -->
+                    <div id="studentRegistration" class="hidden">
+                        <!-- Layout or content wrapper: eyebrow -->
+                        <div class="eyebrow">
+                            NEW STUDENT
+                        </div>
+                        <!-- Section heading -->
+                        <h2>
+                            Create account
+                        </h2>
+                        <!-- Text paragraph -->
+                        <p class="muted small">
+                            Demo accounts are saved in this browser only.
+                        </p>
+                        <!-- Layout or content wrapper -->
+                        <div id="message">
+                        </div>
+                        <!-- Input form -->
+                        <form id="registerForm">
+                            <!-- Layout or content wrapper: field -->
+                            <div class="field">
+                                <!-- Label for a form field -->
+                                <label>
+                                    First name
+                                </label>
+                                <!-- first_name input field -->
+                                <input name="first_name" autocomplete="given-name" required minlength="1">
+                            </div>
+                            <!-- Layout or content wrapper: field -->
+                            <div class="field">
+                                <!-- Label for a form field -->
+                                <label>
+                                    Last name
+                                </label>
+                                <!-- last_name input field -->
+                                <input name="last_name" autocomplete="family-name" required minlength="1">
+                            </div>
+                            <!-- Layout or content wrapper: field -->
+                            <div class="field">
+                                <!-- Label for a form field -->
+                                <label>
+                                    Student number
+                                </label>
+                                <!-- number input field -->
+                                <input name="number" required>
+                            </div>
+                            <!-- Layout or content wrapper: field -->
+                            <div class="field">
+                                <!-- Label for a form field -->
+                                <label>
+                                    Email
+                                </label>
+                                <!-- email input field -->
+                                <input type="email" name="email" required>
+                            </div>
+                            <!-- Layout or content wrapper: field -->
+                            <div class="field">
+                                <!-- Label for a form field -->
+                                <label>
+                                    Password (minimum 8 characters)
+                                </label>
+                                <!-- password input field -->
+                                <input type="password" name="password" minlength="8" required>
+                            </div>
+                            <!-- Clickable button -->
+                            <button class="btn" type="submit">
+                                Create account
+                            </button>
+                        </form>
+                        <!-- Text paragraph -->
+                        <p>
+                            <!-- Link to register.html -->
+                            <a href="register.html">
+                                ← Change role
+                            </a>
+                        </p>
+                        <!-- Text paragraph -->
+                        <p>
+                            Have an account?
+                            <!-- Link to login.html -->
+                            <a href="login.html" style="color:#ff5a63">
+                                Login
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Load JavaScript file js/app.js -->
+        <script src="js/app.js">
+        </script>
+        <!-- JavaScript for page interactions -->
+        <script>
+            if(new URLSearchParams(location.search).get("role")==="student"){document.getElementById("roleSelection").classList.add("hidden");document.getElementById("studentRegistration").classList.remove("hidden");}
+        </script>
+    </body>
+</html>
