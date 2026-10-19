@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!-- CreditBridge is a frontend-only university project demo. -->
+<html lang="en">
+<head>
+    <!-- Supports international text and symbols. -->
+    <meta charset="utf-8">
+    <!-- Makes the layout adapt to phones and computers. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Sets the text displayed in the browser tab. -->
+    <title>Login | CreditBridge</title>
+    <!-- Loads the original CreditBridge design. -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header shown on every page. -->
+    <header>
+        <!-- Main navigation bar. -->
+        <nav class="nav">
+            <!-- Logo returns to the homepage. -->
+            <a class="brand" href="index.html">CREDIT<b>BRIDGE.</b></a>
+            <!-- Navigation links. -->
+            <div class="links">
+                <!-- Homepage link. -->
+                <a href="index.html">Home</a>
+                <!-- Process explanation link. -->
+                <a href="how-it-works.html">How it works</a>
+                <!-- Course recognition application link. -->
+                <a href="apply.html">New application</a>
+                <!-- Opens the Student / Employee chooser. -->
+                <a href="login.html" id="loginNav">Login</a>
+                <!-- Opens the Create account form for new students. -->
+                <a href="register.html" id="registerNav">Register</a>
+                <!-- Hidden until a user has signed in. -->
+                <a href="#" id="logoutNav" class="hidden">Logout</a>
+            </div>
+        </nav>
+    </header>
+    <!-- Main page area. -->
+    <main>
+        <!-- Return link on secondary pages. -->
+        <div class="home-return">
+            <a href="index.html" aria-label="Back to CreditBridge home page">← Back to Home</a>
+        </div>
+        <!-- Limits content width. -->
+        <section class="wrap">
+            <!-- Card matching the original CreditBridge design. -->
+            <div class="panel form">
+                <!-- Step 1: Choose the account type before signing in. -->
+                <div id="roleSelection" class="role-selection">
+                    <!-- THD-style heading. -->
+                    <div class="thd-heading">
+                        TECHNISCHE HOCHSCHULE
+                        <strong>DEGGENDORF · THD</strong>
+                    </div>
+                    <!-- Role selection instruction. -->
+                    <p class="muted">Continue as ...</p>
+                    <!-- Student proceeds to the student sign-in form. -->
+                    <a class="role-choice" href="login.html?role=student">Student</a>
+                    <!-- Employee opens a staff-only sign-in form on this login page. -->
+                    <a class="role-choice" href="login.html?role=employee">Employee</a>
+                    <!-- Clearly distinguishes this demonstration from official THD login. -->
+                    
+                </div>
+                <!-- Sign-in panel is shown after choosing Student or Employee. -->
+                <div id="roleSignIn" class="hidden">
+                    <!-- Back link lets users change between Student and Employee. -->
+                    <p><a href="login.html" class="return-role">← Choose another role</a></p>
+                    <!-- Role heading changes according to the selected sign-in type. -->
+                    <div class="eyebrow" id="signInRoleHeading">STUDENT ACCESS</div>
+                    <h2>Sign in</h2>
+                    <!-- Displays login errors without leaving the page. -->
+                    <div id="message" aria-live="polite"></div>
+                    <!-- Uses the same browser-demo login handler as student sign-in. -->
+                    <form id="loginForm">
+                        <!-- JavaScript sets this to student or employee for role validation. -->
+                        <input type="hidden" name="role" id="loginRole" value="student">
+                        <!-- Account email field. -->
+                        <div class="field">
+                            <label for="loginEmail">Email</label>
+                            <input id="loginEmail" name="email" type="email" autocomplete="email" required>
+                        </div>
+                        <!-- Account password field. -->
+                        <div class="field">
+                            <label for="loginPassword">Password</label>
+                            <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+                        </div>
+                        <!-- Checks accounts stored in the local browser demo. -->
+                        <button class="btn" type="submit">Login →</button>
+                    </form>
+                    <!-- Account creation is available only to students. -->
+                    <p id="studentSignupLink" class="hidden">
+                        New student? <a href="register.html" style="color:#ff5a63">Create account</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Loads the browser-only login and registration logic. -->
+    <script src="js/app.js"></script>
+</body>
+</html>
