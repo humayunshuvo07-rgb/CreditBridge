@@ -1,139 +1,233 @@
-<!DOCTYPE html>
-<!-- Defines the HTML document type. -->
-<!-- Main HTML document -->
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
 <html lang="en">
-    <!-- Page metadata and resource links -->
+    <!-- Start page metadata and resources. -->
     <head>
-        <!-- Browser metadata / responsive configuration -->
-        <meta charset="utf-8">
-        <!-- Browser metadata / responsive configuration -->
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <!-- Browser tab title -->
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width,initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
         <title>
             Dashboard | CreditBridge
-        </title>
-        <!-- External stylesheet or linked resource -->
-        <link rel="stylesheet" href="css/styles.css">
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Finish the browser settings. -->
     </head>
-    <!-- Visible page content -->
+    <!-- Start content shown in the browser. -->
     <body>
-        <!-- Site header -->
+        <!-- Start the common website header. -->
         <header>
-            <!-- Page navigation -->
+            <!-- Create the main navigation menu. -->
             <nav class="nav">
-                <!-- Link to index.html -->
+                <!-- Link to the homepage page. -->
                 <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
                     CREDIT
-                    <!-- Bold brand emphasis -->
+                    <!-- Create the b element. -->
                     <b>
+                        <!-- Visible page text: BRIDGE. -->
                         BRIDGE.
+                    <!-- Close the b element. -->
                     </b>
+                <!-- End the link. -->
                 </a>
-                <!-- Layout or content wrapper: links -->
+                <!-- Group the navigation links. -->
                 <div class="links">
-                    <!-- Link to index.html -->
+                    <!-- Link to the homepage page. -->
                     <a href="index.html">
+                        <!-- Visible page text: Home -->
                         Home
+                    <!-- End the link. -->
                     </a>
-                    <!-- Link to how-it-works.html -->
+                    <!-- Link to the process explanation page. -->
                     <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
                         How it works
+                    <!-- End the link. -->
                     </a>
-                    <!-- Link to apply.html -->
+                    <!-- Link to the university selection page. -->
                     <a href="apply.html">
+                        <!-- Visible page text: New application -->
                         New application
+                    <!-- End the link. -->
                     </a>
-                    <!-- Link to login.html -->
+                    <!-- Link to the login page. -->
                     <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
                         Login
+                    <!-- End the link. -->
                     </a>
-                    <!-- Link to register.html -->
+                    <!-- Link to the registration page. -->
                     <a href="register.html" id="registerNav">
+                        <!-- Visible page text: Register -->
                         Register
+                    <!-- End the link. -->
                     </a>
-                    <!-- Link to # -->
-                    <a href="#" id="logoutNav" class="hidden">
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
                         Logout
+                    <!-- End the link. -->
                     </a>
+                <!-- End this layout container. -->
                 </div>
+            <!-- End navigation. -->
             </nav>
+        <!-- End the page header. -->
         </header>
-        <!-- Primary page content -->
+        <!-- Start the main page content. -->
         <main>
-        <!-- Easy return link to the main CreditBridge homepage -->
-        <div class="home-return">
-            <a href="index.html" aria-label="Back to CreditBridge home page">← Back to Home</a>
-        </div>
-
-            <!-- Page content section: wrap -->
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a aria-label="Back to CreditBridge home page" href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
             <section class="wrap">
-                <!-- Layout or content wrapper: eyebrow -->
+                <!-- Create a layout container. -->
                 <div class="eyebrow">
+                    <!-- Visible page text: MY CREDITBRIDGE -->
                     MY CREDITBRIDGE
+                <!-- End this layout container. -->
                 </div>
-                <!-- Main page heading -->
+                <!-- Display a main heading. -->
                 <h1 id="welcome">
+                    <!-- Visible page text: Dashboard -->
                     Dashboard
+                <!-- End the main heading. -->
                 </h1>
-                <!-- Text paragraph -->
-                <p id="roleText" class="muted">
+                <!-- Display instructions, descriptions, or status text. -->
+                <p class="muted" id="roleText">
+                <!-- End the paragraph. -->
                 </p>
-                <!-- Layout or content wrapper: grid -->
+                <!-- Create a layout container. -->
                 <div class="grid" id="stats">
+                <!-- End this layout container. -->
                 </div>
-                <!-- Page content section: section -->
+                <!-- Start a related content section. -->
                 <section class="section">
-                    <!-- Layout or content wrapper -->
+                    <!-- Create a layout container. -->
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
-                        <!-- Section heading -->
+                        <!-- Display a section heading. -->
                         <h2 id="dashboardHeading">
+                            <!-- Visible page text: My applications -->
                             My applications
+                        <!-- End the section heading. -->
                         </h2>
-                        <!-- Link to apply.html -->
-                        <a class="btn" id="newButton" href="apply.html">
+                        <!-- Link to the university selection page. -->
+                        <a class="btn" href="apply.html" id="newButton">
+                            <!-- Visible page text: + New application -->
                             + New application
+                        <!-- End the link. -->
                         </a>
+                    <!-- End this layout container. -->
                     </div>
-                    <!-- Layout or content wrapper: panel table-wrap -->
+                    <!-- Create a styled content panel. -->
                     <div class="panel table-wrap">
-                        <!-- Data table -->
+                        <!-- Create the table element. -->
                         <table>
-                            <!-- Table column headings -->
+                            <!-- Create the thead element. -->
                             <thead>
-                                <!-- Table row -->
+                                <!-- Create the tr element. -->
                                 <tr>
-                                    <!-- Table heading cell -->
+                                    <!-- Create the th element. -->
                                     <th>
+                                        <!-- Visible page text: ID -->
                                         ID
+                                    <!-- Close the th element. -->
                                     </th>
-                                    <!-- Table heading cell -->
+                                    <!-- Create the th element. -->
                                     <th>
+                                        <!-- Visible page text: Original course -->
                                         Original course
+                                    <!-- Close the th element. -->
                                     </th>
-                                    <!-- Table heading cell -->
+                                    <!-- Create the th element. -->
                                     <th>
+                                        <!-- Visible page text: Target course -->
                                         Target course
+                                    <!-- Close the th element. -->
                                     </th>
-                                    <!-- Table heading cell -->
+                                    <!-- Create the th element. -->
                                     <th>
+                                        <!-- Visible page text: Status -->
                                         Status
+                                    <!-- Close the th element. -->
                                     </th>
-                                    <!-- Table heading cell -->
+                                    <!-- Create the th element. -->
                                     <th>
+                                        <!-- Visible page text: Action -->
                                         Action
+                                    <!-- Close the th element. -->
                                     </th>
+                                <!-- Close the tr element. -->
                                 </tr>
+                            <!-- Close the thead element. -->
                             </thead>
-                            <!-- Table body -->
+                            <!-- Create the tbody element. -->
                             <tbody id="applicationsBody">
+                            <!-- Close the tbody element. -->
                             </tbody>
+                        <!-- Close the table element. -->
                         </table>
+                    <!-- End this layout container. -->
                     </div>
+                <!-- End this section. -->
                 </section>
+            <!-- End this section. -->
             </section>
+        <!-- End the main content. -->
         </main>
-        <!-- Load JavaScript file js/app.js -->
+        <!-- Load existing site behaviour from app.js. -->
         <script src="js/app.js">
-        </script>
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+               // Start page-specific JavaScript without adding global variables.
+               (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
     </body>
+<!-- Close the HTML document. -->
 </html>
