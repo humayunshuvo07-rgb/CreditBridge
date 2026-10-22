@@ -1,0 +1,225 @@
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
+<html lang="en">
+    <!-- Start page metadata and resources. -->
+    <head>
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width,initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
+        <title>
+            How it works | CreditBridge
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Shared application workflow components. -->
+    <link rel="stylesheet" href="css/workflow.css">
+    <!-- Finish the browser settings. -->
+        <link rel="stylesheet" href="css/final-polish.css">
+</head>
+    <!-- Start content shown in the browser. -->
+    <body>
+        <!-- Start the common website header. -->
+        <header>
+            <!-- Create the main navigation menu. -->
+            <nav class="nav">
+                <!-- Link to the homepage page. -->
+                <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
+                    CREDIT
+                    <!-- Create the b element. -->
+                    <b>
+                        <!-- Visible page text: BRIDGE. -->
+                        BRIDGE.
+                    <!-- Close the b element. -->
+                    </b>
+                <!-- End the link. -->
+                </a>
+                <!-- Group the navigation links. -->
+                <div class="links">
+                    <!-- Link to the homepage page. -->
+                    <a href="index.html">
+                        <!-- Visible page text: Home -->
+                        Home
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the process explanation page. -->
+                    <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
+                        How it works
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the university selection page. -->
+                    <a href="apply.html">
+                        <!-- Visible page text: New application -->
+                        New application
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the login page. -->
+                    <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
+                        Login
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the registration page. -->
+                    <a href="register.html" id="registerNav">
+                        <!-- Visible page text: Register -->
+                        Register
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
+                        Logout
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End navigation. -->
+            </nav>
+        <!-- End the page header. -->
+        </header>
+        <!-- Start the main page content. -->
+        <main>
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a aria-label="Back to CreditBridge home page" href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
+            <section class="wrap">
+                <!-- Create a layout container. -->
+                <div class="eyebrow">
+                    <!-- Visible page text: PROCESS -->
+                    PROCESS
+                <!-- End this layout container. -->
+                </div>
+                <!-- Display a main heading. -->
+                <h1>
+                    <!-- Visible page text: How CreditBridge works. -->
+                    How CreditBridge works.
+                <!-- End the main heading. -->
+                </h1>
+                <!-- Create a layout container. -->
+                <div class="grid">
+                    <!-- Start a self-contained content card. -->
+                    <article class="card step">
+                        <!-- Display a smaller heading. -->
+                        <h3>
+                            <!-- Visible page text: 1. Student application -->
+                            1. Student application
+                        <!-- End the smaller heading. -->
+                        </h3>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p>
+                            <!-- Visible page text: Register, sign in, and submit your course recognition information. -->
+                            Register, sign in, and submit your course recognition information.
+                        <!-- End the paragraph. -->
+                        </p>
+                    <!-- End this article. -->
+                    </article>
+                    <!-- Start a self-contained content card. -->
+                    <article class="card step">
+                        <!-- Display a smaller heading. -->
+                        <h3>
+                            <!-- Visible page text: 2. Lecturer review -->
+                            2. Lecturer review
+                        <!-- End the smaller heading. -->
+                        </h3>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p>
+                            <!-- Visible page text: The lecturer approves or rejects the academic request. -->
+                            The lecturer approves or rejects the academic request.
+                        <!-- End the paragraph. -->
+                        </p>
+                    <!-- End this article. -->
+                    </article>
+                    <!-- Start a self-contained content card. -->
+                    <article class="card step">
+                        <!-- Display a smaller heading. -->
+                        <h3>
+                            <!-- Visible page text: 3. Final decision -->
+                            3. Final decision
+                        <!-- End the smaller heading. -->
+                        </h3>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p>
+                            <!-- Visible page text: The study center confirms the request, and the student can track the result. -->
+                            The study center confirms the request, and the student can track the result.
+                        <!-- End the paragraph. -->
+                        </p>
+                    <!-- End this article. -->
+                    </article>
+                <!-- End this layout container. -->
+                </div>
+                <!-- Arrange the Back and Next buttons. -->
+                <div class="actions">
+                    <!-- Link to the registration page. -->
+                    <a class="btn" href="register.html">
+                        <!-- Visible page text: Create your account -->
+                        Create your account
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End this section. -->
+            </section>
+        <!-- End the main content. -->
+        </main>
+        <!-- Load existing site behaviour from app.js. -->
+        <script src="js/app.js">
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+               // Start page-specific JavaScript without adding global variables.
+               (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
+        <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/workflow.js"></script>
+    <script src="js/final-polish.js"></script>
+</body>
+<!-- Close the HTML document. -->
+</html>
