@@ -1,0 +1,251 @@
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
+<html lang="en">
+    <!-- Start page metadata and resources. -->
+    <head>
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
+        <title>
+            Login | CreditBridge
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Shared application workflow components. -->
+    <link rel="stylesheet" href="css/workflow.css">
+    <!-- Finish the browser settings. -->
+        <link rel="stylesheet" href="css/final-polish.css">
+    <link rel="stylesheet" href="css/language.css"/>
+</head>
+    <!-- Start content shown in the browser. -->
+    <body>
+        <!-- Start the common website header. -->
+        <header>
+            <!-- Create the main navigation menu. -->
+            <nav class="nav">
+                <!-- Link to the homepage page. -->
+                <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
+                    CREDIT
+                    <!-- Create the b element. -->
+                    <b>
+                        <!-- Visible page text: BRIDGE. -->
+                        BRIDGE.
+                    <!-- Close the b element. -->
+                    </b>
+                <!-- End the link. -->
+                </a>
+                <!-- Group the navigation links. -->
+                <div class="links">
+                    <!-- Link to the homepage page. -->
+                    <a href="index.html">
+                        <!-- Visible page text: Home -->
+                        Home
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the process explanation page. -->
+                    <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
+                        How it works
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the university selection page. -->
+                    <a href="apply.html">
+                        <!-- Visible page text: New application -->
+                        New application
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the login page. -->
+                    <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
+                        Login
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
+                        Logout
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End navigation. -->
+            </nav>
+        <!-- End the page header. -->
+        </header>
+        <!-- Start the main page content. -->
+        <main>
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a aria-label="Back to CreditBridge home page" href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
+            <section class="wrap">
+                <!-- Create a styled content panel. -->
+                <div class="panel form">
+                    <!-- Create a layout container. -->
+                    <div class="role-selection" id="roleSelection">
+                        <!-- Create a layout container. -->
+                        <div class="thd-heading">
+                            <!-- Visible page text: TECHNISCHE HOCHSCHULE -->
+                            TECHNISCHE HOCHSCHULE
+                            <!-- Create the strong element. -->
+                            <strong>
+                                <!-- Visible page text: DEGGENDORF &middot; THD -->
+                                DEGGENDORF &middot; THD
+                            <!-- Close the strong element. -->
+                            </strong>
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p class="muted">
+                            <!-- Visible page text: Continue as ... -->
+                            Continue as ...
+                        <!-- End the paragraph. -->
+                        </p>
+                        <!-- Link to the login page. -->
+                        <a class="role-choice" href="login.html?role=student">
+                            <!-- Visible page text: Student -->
+                            Student
+                        <!-- End the link. -->
+                        </a>
+                        <!-- Link to the login page. -->
+                        <a class="role-choice" href="login.html?role=employee">
+                            <!-- Visible page text: Employee -->
+                            Employee
+                        <!-- End the link. -->
+                        </a>
+                    <!-- End this layout container. -->
+                    </div>
+                    <!-- Create a layout container. -->
+                    <div class="hidden" id="roleSignIn">
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p>
+                            <!-- Link to the login page. -->
+                            <a class="return-role" href="login.html">
+                                <!-- Visible page text: &larr; Choose another role -->
+                                &larr; Choose another role
+                            <!-- End the link. -->
+                            </a>
+                        <!-- End the paragraph. -->
+                        </p>
+                        <!-- Create a layout container. -->
+                        <div class="eyebrow" id="signInRoleHeading">
+                            <!-- Visible page text: STUDENT ACCESS -->
+                            STUDENT ACCESS
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Display a section heading. -->
+                        <h1 class="wizard-step-title">
+                            <!-- Visible page text: Sign in -->
+                            Sign in
+                        <!-- End the section heading. -->
+                        </h1>
+                        <!-- Create a layout container. -->
+                        <div aria-live="polite" id="message">
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Start the loginForm form. -->
+                        <form id="loginForm">
+                            <!-- Provide an input for loginRole. -->
+                            <input id="loginRole" name="role" type="hidden" value="student"/>
+                            <!-- Group a label and form field. -->
+                            <div class="field">
+                                <!-- Label the login email or username field. -->
+                                <label for="loginIdentifier">
+                                    <!-- Visible page text: Email or Username -->
+                                    Email or Username
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Provide an input for login email or username. -->
+                                <input autocomplete="username" id="loginIdentifier" name="identifier" required="" type="text"/>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Group a label and form field. -->
+                            <div class="field">
+                                <!-- Label the login password field. -->
+                                <label for="loginPassword">
+                                    <!-- Visible page text: Password -->
+                                    Password
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Provide an input for login password. -->
+                                <input autocomplete="current-password" id="loginPassword" name="password" required="" type="password"/>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Create the form submission button. -->
+                            <button class="btn" type="submit">
+                                <!-- Visible page text: Login &rarr; -->
+                                Login &rarr;
+                            <!-- End the button. -->
+                            </button>
+                        <!-- End the form. -->
+                        </form>
+                    <!-- End this layout container. -->
+                    </div>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End this section. -->
+            </section>
+        <!-- End the main content. -->
+        </main>
+        <!-- Load existing site behaviour from app.js. -->
+        <script src="js/app.js">
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+               // Start page-specific JavaScript without adding global variables.
+               (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
+        <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/workflow.js"></script>
+    <script src="js/final-polish.js"></script>
+    <script src="js/language.js"></script>
+</body>
+<!-- Close the HTML document. -->
+</html>

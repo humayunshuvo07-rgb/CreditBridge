@@ -1,0 +1,329 @@
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
+<html lang="en">
+    <!-- Start page metadata and resources. -->
+    <head>
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
+        <title>
+            Select your university | CreditBridge
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Shared application workflow components. -->
+    <link rel="stylesheet" href="css/workflow.css">
+    <!-- Finish the browser settings. -->
+        <link rel="stylesheet" href="css/frontend-completion.css">
+    <link rel="stylesheet" href="css/final-polish.css">
+    <link rel="stylesheet" href="css/safety-ux.css">
+    <link rel="stylesheet" href="css/language.css"/>
+</head>
+    <!-- Start content shown in the browser. -->
+    <body data-wizard-step="1">
+        <!-- Start the common website header. -->
+        <header>
+            <!-- Create the main navigation menu. -->
+            <nav class="nav">
+                <!-- Link to the homepage page. -->
+                <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
+                    CREDIT
+                    <!-- Create the b element. -->
+                    <b>
+                        <!-- Visible page text: BRIDGE. -->
+                        BRIDGE.
+                    <!-- Close the b element. -->
+                    </b>
+                <!-- End the link. -->
+                </a>
+                <!-- Group the navigation links. -->
+                <div class="links">
+                    <!-- Link to the homepage page. -->
+                    <a href="index.html">
+                        <!-- Visible page text: Home -->
+                        Home
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the process explanation page. -->
+                    <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
+                        How it works
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the university selection page. -->
+                    <a aria-current="page" href="apply.html">
+                        <!-- Visible page text: New application -->
+                        New application
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the login page. -->
+                    <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
+                        Login
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
+                        Logout
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End navigation. -->
+            </nav>
+        <!-- End the page header. -->
+        </header>
+        <!-- Start the main page content. -->
+        <main>
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
+            <section class="wrap">
+                <!-- Create a styled content panel. -->
+                <div class="panel form university-panel">
+                    <!-- Create a layout container. -->
+                    <div id="universityStep">
+                        <!-- Create a layout container. -->
+                        <div class="eyebrow">
+                            <!-- Visible page text: NEW APPLICATION &middot; STEP 1 OF 8 -->
+                            NEW APPLICATION &middot; STEP 1 OF 8
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Display a section heading. -->
+                        <h1 class="wizard-step-title">
+                            <!-- Visible page text: Select your university -->
+                            Select your university
+                        <!-- End the section heading. -->
+                        </h1>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p class="muted">
+                            <!-- Visible page text: Where did you complete your previous exam or course? -->
+                            Where did you complete your previous exam or course?
+                        <!-- End the paragraph. -->
+                        </p>
+                        <!-- Start the universityStepForm form. -->
+                        <form id="universityStepForm">
+                            <!-- Group a label and form field. -->
+                            <div class="field">
+                                <!-- Label the university where the earlier examination was completed field. -->
+                                <label for="universityName">
+                                    <!-- Visible page text: Name of the University where the exam was acquired -->
+                                    Name of the University where the exam was acquired
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Provide an input for university where the earlier examination was completed. -->
+                                <input aria-describedby="universityHelp" autocomplete="organization" id="universityName" list="universitySuggestions" maxlength="180" name="institution" placeholder="Start typing a university name..." required="" type="text"/>
+                                <!-- Create the datalist element. -->
+                                <datalist id="universitySuggestions">
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="Technische Hochschule Deggendorf (THD)">
+                                    <!-- End the option. -->
+                                    </option>
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="Deggendorf Institute of Technology (THD)">
+                                    <!-- End the option. -->
+                                    </option>
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="Technische Universit&auml;t Berlin (TU Berlin)">
+                                    <!-- End the option. -->
+                                    </option>
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="Karlsruhe Institute of Technology (KIT)">
+                                    <!-- End the option. -->
+                                    </option>
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="University of Twente">
+                                    <!-- End the option. -->
+                                    </option>
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="Delft University of Technology (TU Delft)">
+                                    <!-- End the option. -->
+                                    </option>
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="Politecnico di Milano">
+                                    <!-- End the option. -->
+                                    </option>
+                                <!-- Close the datalist element. -->
+                                </datalist>
+                                <!-- Display instructions, descriptions, or status text. -->
+                                <p class="muted small university-help" id="universityHelp">
+                                    <!-- Visible page text: Choose a suggestion or enter any other university. THD reviews credits individu... -->
+                                    Choose a suggestion or enter any other university. THD reviews credits individually.
+                                <!-- End the paragraph. -->
+                                </p>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Arrange the Back and Next buttons. -->
+                            <div class="actions university-navigation">
+                                <!-- Link to the homepage page. -->
+                                <a class="btn secondary" href="index.html">
+                                    <!-- Visible page text: &larr; Back -->
+                                    &larr; Back
+                                <!-- End the link. -->
+                                </a>
+                                <!-- Create the form submission button. -->
+                                <button class="btn" type="submit">
+                                    <!-- Visible page text: Next &rarr; -->
+                                    Next &rarr;
+                                <!-- End the button. -->
+                                </button>
+                            <!-- End this layout container. -->
+                            </div>
+                        <!-- End the form. -->
+                        </form>
+                        <!-- Create a layout container. -->
+                        <div aria-live="polite" id="universityMessage">
+                        <!-- End this layout container. -->
+                        </div>
+                    <!-- End this layout container. -->
+                    </div>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End this section. -->
+            </section>
+        <!-- End the main content. -->
+        </main>
+        <!-- Load existing site behaviour from app.js. -->
+        <script src="js/app.js">
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // This file owns only its own step. The shared external JS and CSS are unchanged.
+                // Read the currently signed-in user.
+                const student = user();
+                // Check a condition before continuing.
+                if (!student || student.role !== 'student') {
+                    // Navigate to the next appropriate page.
+                    window.location.replace('login.html?role=student');
+                    // Return from the current function.
+                    return;
+                // Finish this code block or expression.
+                }
+                // Create the local draft key for this student.
+                const draftKey = 'creditbridge_application_draft_' + student.id;
+                // Prepare the application draft data.
+                let draft = {};
+                // Handle stored data safely.
+                try {
+                    // Read previously saved application information.
+                    const saved = JSON.parse(localStorage.getItem(draftKey) || '{}');
+                    // Check a condition before continuing.
+                    if (saved && typeof saved === 'object' && !Array.isArray(saved)) draft = saved;
+                // Finish this code block or expression.
+                } catch (error) { draft = {}; }
+                // Create a shortcut to find page elements.
+                const byId = id => document.getElementById(id);
+                // Define how to save progress between pages.
+                const saveDraft = () => localStorage.setItem(draftKey, JSON.stringify(draft));
+                // Define how to show a validation message.
+                const showError = (id, message) => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = message;
+                    // Show or hide part of the interface.
+                    element.classList.remove('hidden');
+                // Finish this code block or expression.
+                };
+                // Define how to hide a validation message.
+                const clearError = id => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = '';
+                    // Show or hide part of the interface.
+                    element.classList.add('hidden');
+                // Finish this code block or expression.
+                };
+                // PAGE LOGIC START
+                // Step 1: Previous university.
+                // Declare a value used by this page.
+                const university = byId('universityName');
+                // Read or update a form selection.
+                university.value = draft.university || localStorage.getItem('creditbridge_university_draft_' + student.id) || '';
+                // Run this handler when the user interacts.
+                byId('universityStepForm').addEventListener('submit', event => {
+                    // Run the next part of this page's behaviour.
+                    event.preventDefault();
+                    // Read or update a form selection.
+                    draft.university = university.value.trim();
+                    // Check a condition before continuing.
+                    if (!draft.university) { university.reportValidity(); return; }
+                    // Run the next part of this page's behaviour.
+                    saveDraft();
+                    // Navigate to the next appropriate page.
+                    location.href = 'program.html';
+                // Finish this code block or expression.
+                });
+                // PAGE LOGIC END
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
+        <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/workflow.js"></script>
+    <!-- Shared frontend controls and application management. -->
+    <script src="js/frontend-completion.js"></script>
+    <script src="js/final-polish.js"></script>
+    <script src="js/safety-ux.js"></script>
+    <script src="js/language.js"></script>
+</body>
+<!-- Close the HTML document. -->
+</html>
