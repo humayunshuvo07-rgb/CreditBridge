@@ -1,0 +1,8 @@
+/* Shared language selector, pinned to the right end of the navigation. */
+.cb-language-switch { margin-left: 14px; display: flex; align-items: center; gap: 5px; white-space: nowrap; font: 600 14px/1.3 system-ui, sans-serif; }
+.cb-language-switch button { padding: 6px 7px; border: 0; border-radius: 5px; background: transparent; color: #506073; cursor: pointer; font: inherit; }
+.cb-language-switch button.selected { background: #e8f5fc; color: #007db6; }
+.cb-language-switch button:hover, .cb-language-switch button:focus-visible { outline: 2px solid #009bd7; outline-offset: 1px; }
+.nav { display:flex; align-items:center; }
+.nav .cb-language-switch { flex-shrink: 0; }
+@media(max-width:700px) { .nav { flex-wrap:wrap; } .nav .cb-language-switch { margin-left:auto; } .cb-language-switch button { padding:7px 5px; } }
