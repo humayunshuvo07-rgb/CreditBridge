@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | CreditBridge</title>
+    <link rel="stylesheet" href="css/frontend-completion.css">
+    <link rel="stylesheet" href="css/final-polish.css">
+    <link rel="stylesheet" href="css/language.css"/>
+</head>
+<body>
+    <!-- Redirect old dashboard bookmarks to the correct dashboard for the signed-in role. -->
+    <script src="js/app.js"></script>
+    <script>
+        const signedIn = user();
+        location.replace(!signedIn ? 'login.html' : signedIn.role === 'student' ? 'student-dashboard.html' : signedIn.role === 'lecturer' ? 'lecturer-dashboard.html' : 'exam-board-dashboard.html');
+    </script>
+    <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/workflow.js"></script>
+    <!-- Shared frontend controls and application management. -->
+    <script src="js/frontend-completion.js"></script>
+    <script src="js/final-polish.js"></script>
+    <script src="js/language.js"></script>
+</body>
+</html>
