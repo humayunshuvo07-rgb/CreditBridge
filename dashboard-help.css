@@ -1,0 +1,5 @@
+/* Application table column help controls */
+.cb-help{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:1px solid #7188a0;border-radius:50%;background:white;color:#275f88;font-size:12px;font-weight:700;cursor:pointer;margin-left:5px;vertical-align:middle}
+.cb-help:focus-visible{outline:3px solid #178fcf;outline-offset:2px}
+.cb-help-panel{margin:8px 0 0;padding:10px 12px;border:1px solid #c6dbe9;background:#f2f9fe;border-radius:7px;color:#28465c;font-size:13px;line-height:1.45;max-width:270px;font-weight:400;white-space:normal}
+@media(max-width:650px){.cb-help-panel{max-width:220px}.table-wrap{overflow-x:auto}}
