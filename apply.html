@@ -13,6 +13,7 @@
         </title> <!-- End the browser tab title. -->
         <!-- Load the existing shared CSS design file. -->
         <link href="css/styles.css" rel="stylesheet"/>
+        <link href="css/university-search.css" rel="stylesheet"/>
     <!-- Shared application workflow components. -->
     <link rel="stylesheet" href="css/workflow.css">
     <!-- Finish the browser settings. -->
@@ -128,39 +129,9 @@
                                 <!-- End the form label. -->
                                 </label>
                                 <!-- Provide an input for university where the earlier examination was completed. -->
-                                <input aria-describedby="universityHelp" autocomplete="organization" id="universityName" list="universitySuggestions" maxlength="180" name="institution" placeholder="Start typing a university name..." required="" type="text"/>
-                                <!-- Create the datalist element. -->
-                                <datalist id="universitySuggestions">
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="Technische Hochschule Deggendorf (THD)">
-                                    <!-- End the option. -->
-                                    </option>
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="Deggendorf Institute of Technology (THD)">
-                                    <!-- End the option. -->
-                                    </option>
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="Technische Universit&auml;t Berlin (TU Berlin)">
-                                    <!-- End the option. -->
-                                    </option>
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="Karlsruhe Institute of Technology (KIT)">
-                                    <!-- End the option. -->
-                                    </option>
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="University of Twente">
-                                    <!-- End the option. -->
-                                    </option>
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="Delft University of Technology (TU Delft)">
-                                    <!-- End the option. -->
-                                    </option>
-                                    <!-- Define a selectable dropdown option. -->
-                                    <option value="Politecnico di Milano">
-                                    <!-- End the option. -->
-                                    </option>
-                                <!-- Close the datalist element. -->
-                                </datalist>
+                                <input aria-describedby="universityHelp" autocomplete="organization" id="universityName" maxlength="180" name="institution" placeholder="Start typing a university name..." required="" type="text"/>
+                                <!-- Searchable university suggestions appear below the field. -->
+                                <div class="university-results" id="universityResults" role="listbox" aria-label="University suggestions" hidden></div>
                                 <!-- Display instructions, descriptions, or status text. -->
                                 <p class="muted small university-help" id="universityHelp">
                                     <!-- Visible page text: Choose a suggestion or enter any other university. THD reviews credits individu... -->
@@ -171,8 +142,8 @@
                             </div>
                             <!-- Arrange the Back and Next buttons. -->
                             <div class="actions university-navigation">
-                                <!-- Link to the homepage page. -->
-                                <a class="btn secondary" href="index.html">
+                                <!-- Back to the actual previous browser page; dashboard is the direct-entry fallback. -->
+                                <a class="btn secondary" href="student-dashboard.html" id="backToStudentDashboard">
                                     <!-- Visible page text: &larr; Back -->
                                     &larr; Back
                                 <!-- End the link. -->
@@ -310,6 +281,25 @@
                     location.href = 'program.html';
                 // Finish this code block or expression.
                 });
+                // Back returns to the actual previous page, not a fixed page.
+                // Save the university first so returning to this step preserves the entry.
+                byId('backToStudentDashboard')?.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    draft.university = university.value.trim();
+                    saveDraft();
+                    // Browser history contains the previous page when the user navigated here.
+                    // For a directly opened URL, use the dashboard as a safe fallback.
+                    if (window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        window.location.href = 'student-dashboard.html';
+                    }
+                });
+                // Preserve edits when moving to a previous browser page.
+                university.addEventListener('change', () => {
+                    draft.university = university.value.trim();
+                    saveDraft();
+                });
                 // PAGE LOGIC END
             // Finish this code block or expression.
             })();
@@ -324,6 +314,7 @@
     <script src="js/final-polish.js"></script>
     <script src="js/safety-ux.js"></script>
     <script src="js/language.js"></script>
+    <script src="js/university-search.js"></script>
 </body>
 <!-- Close the HTML document. -->
 </html>
