@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grade sheet | CreditBridge</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/workflow.css">
+  <link rel="stylesheet" href="css/frontend-completion.css">
+  <link rel="stylesheet" href="css/final-polish.css">
+  <link rel="stylesheet" href="css/safety-ux.css">
+  <link rel="stylesheet" href="css/language.css">
+  <link rel="stylesheet" href="css/document-preview.css">
+  <style>
+    .doc-steps {display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 25px}
+    .doc-step-button {font-size:13px;padding:9px 12px;background:#edf3fa;border:1px solid #d5e3ef;border-radius:20px;text-decoration:none;color:#20374e;cursor:pointer}
+    .doc-step-button.active,.doc-step-button:hover,.doc-step-button:focus-visible {background:#d6edfb;color:#006fae;font-weight:700}
+    .doc-upload {padding:20px;border:1px solid #d7e1ea;border-radius:10px;margin:16px 0}
+    .doc-upload input {margin:10px 0;max-width:100%}
+    .doc-option {display:flex;align-items:center;gap:10px;margin:16px 0;padding:13px 16px;border:1px solid #cfdfe9;border-radius:9px;cursor:pointer;font-weight:600}.doc-option:has(input:checked){background:#e6f5ff;border-color:#0187c8}
+    .doc-note {color:#536780;font-size:14px}
+    .supporting-title {font-size:18px;line-height:1.4;margin:22px 0 12px;font-weight:700}
+    .doc-page-actions {display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+  </style>
+</head>
+<body data-document-page="0">
+  <!-- Shared navigation. -->
+  <header><nav class="nav">
+    <a class="brand" href="index.html">CREDIT<b>BRIDGE.</b></a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="apply.html" hidden>New application</a>
+      <a href="login.html" id="loginNav">Login</a>
+      <span class="muted small hidden" id="signedInName"></span>
+      <a href="#" id="logoutNav" class="hidden">Logout</a>
+    </div>
+  </nav></header>
+  <main class="wrap" style="max-width:780px;margin:42px auto 70px">
+    <section class="panel" style="padding:24px">
+      <div class="eyebrow">SUPPORTING DOCUMENTS · 1 OF 4</div>
+      <h1 class="wizard-step-title">Grade sheet</h1>
+      <nav class="doc-steps" aria-label="Document steps"><a class="doc-step-button active" href="documents.html" aria-current="step">1. Grade sheet</a><a class="doc-step-button" href="document-catalogue.html">2. Annotated module catalogue</a><a class="doc-step-button" href="document-course.html">3. Course description</a><a class="doc-step-button" href="document-other.html">4. Other supporting documents</a></nav>
+      <h2 class="supporting-title">Recognition is not possible without supporting documents! The following supporting documents are enclosed:</h2>
+      <p class="doc-note">Select at least one category and upload a document. Unselected categories may be skipped.</p>
+      <form id="documentStepForm">
+        <label class="doc-option"><input id="docChosen" type="checkbox"> Copy of certificate of performance (grade sheet)</label>
+        <div class="doc-upload">
+          <label for="gradeSheetFiles">Choose document(s) (PDF, JPG, PNG, DOC or DOCX)</label>
+          <input type="file" id="gradeSheetFiles" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple>
+          <ul id="gradeSheetPreview" aria-live="polite"></ul>
+          
+        </div>
+        <p id="documentsMessage" class="notice hidden" role="alert"></p>
+        <div class="doc-page-actions">
+          <a class="btn secondary" href="performance.html" id="docBack">← Back</a>
+          <button class="btn" type="submit">Next →</button>
+          <button class="btn secondary" type="button" id="docSkip">Skip</button>
+          <button class="btn secondary" type="button" id="docSave">Save draft</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script src="js/app.js"></script>
+  <script src="js/ui-enhancements.js"></script>
+  <script src="js/workflow.js"></script>
+  <script src="js/frontend-completion.js"></script>
+  <script src="js/final-polish.js"></script>
+  <script src="js/safety-ux.js"></script>
+  <script src="js/document-steps.js"></script>
+  <script src="js/language.js"></script>
+</body>
+</html>
+

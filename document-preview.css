@@ -1,0 +1,79 @@
+/* Supporting document file list and accessible PDF/image preview. */
+.cb-document-files { list-style: none; padding: 0; margin: 12px 0 0; }
+.cb-document-files li {
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; padding: 10px 0; border-bottom: 1px solid #e3eaf0;
+}
+.cb-document-file-name { overflow-wrap: anywhere; min-width: 0; flex: 1; font-size: 14px; }
+.cb-document-file-empty { color: #586b80; }
+.cb-document-preview-button {
+  flex: 0 0 auto; border: 1px solid #0483bd; border-radius: 6px;
+  color: #006d9f; background: #fff; font: 600 14px/1.2 system-ui, sans-serif;
+  padding: 9px 14px; cursor: pointer;
+}
+.cb-document-preview-button:hover:not(:disabled),
+.cb-document-preview-button:focus-visible { background: #e8f5fc; outline-offset: 2px; }
+.cb-document-preview-button:disabled { color: #8392a1; border-color: #c8d1da; cursor: not-allowed; }
+.cb-document-file-info { color: #56697a; font-size: 13px; line-height: 1.5; margin: 6px 0 0; }
+.cb-document-preview-open { overflow: hidden; }
+.cb-document-preview-overlay[hidden] { display: none !important; }
+.cb-document-preview-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(13, 31, 48, .74);
+}
+body.cb-document-preview-open { overflow: hidden; }
+.cb-document-preview-dialog {
+  display: flex; flex-direction: column; width: min(920px, 100%);
+  height: min(88vh, 880px); background: white; color: #172b3c;
+  border-radius: 12px; box-shadow: 0 18px 55px rgba(0,0,0,.26); overflow: hidden;
+}
+.cb-document-preview-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px; padding: 15px 20px; border-bottom: 1px solid #d8e3ed;
+}
+.cb-document-preview-header h2 { font-size: 18px; margin: 0; overflow-wrap: anywhere; }
+.cb-document-preview-close {
+  border: 0; border-radius: 6px; background: #f2f6fa;
+  color: #182c3d; font-size: 26px; line-height: 1; min-width: 38px;
+  min-height: 38px; cursor: pointer;
+}
+.cb-document-preview-content {
+  flex: 1; display: grid; place-items: center; min-height: 0;
+  background: #f3f6f9; overflow: auto;
+}
+.cb-document-preview-content iframe { width: 100%; height: 100%; border: 0; background: white; }
+.cb-document-preview-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.cb-document-preview-fallback { max-width: 550px; padding: 24px; line-height: 1.6; }
+.cb-document-preview-actions {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;
+  align-items: center; padding: 12px 18px; border-top: 1px solid #d8e3ed;
+}
+.cb-document-preview-actions a, .cb-document-preview-actions button {
+  display: inline-block; text-decoration: none; font: 600 14px/1.25 system-ui, sans-serif;
+  padding: 10px 14px; border-radius: 6px; cursor: pointer;
+  background: #007eb8; color: white; border: 1px solid #007eb8;
+}
+.cb-document-preview-actions button { background: white; color: #006b9d; }
+@media (max-width: 600px) {
+  .cb-document-preview-dialog { height: min(93dvh, 880px); }
+  .cb-document-preview-header { padding: 12px; }
+  .cb-document-preview-header h2 { font-size: 15px; }
+  .cb-document-preview-actions { padding: 12px; justify-content: center; }
+  .cb-document-preview-actions a, .cb-document-preview-actions button { flex: 1; text-align: center; }
+}
+
+/* Separate file actions: preview preserves the file, delete removes only that file. */
+.cb-document-file-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cb-document-delete-button {
+  flex: 0 0 auto; border: 1px solid #b84a52; border-radius: 6px;
+  color: #a12b35; background: #fff; font: 600 14px/1.2 system-ui, sans-serif;
+  padding: 9px 14px; cursor: pointer;
+}
+.cb-document-delete-button:hover, .cb-document-delete-button:focus-visible {
+  color: #84202a; background: #fff0f1; outline-offset: 2px;
+}
+@media (max-width: 480px) {
+  .cb-document-file-actions { width: 100%; }
+  .cb-document-file-actions button { flex: 1 1 auto; }
+}
