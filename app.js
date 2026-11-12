@@ -1,770 +1,784 @@
-'use strict';
-/* CreditBridge student/employee workflow. All pages remain independent HTML files. */
-(() => {
-    const person = typeof user === 'function' ? user() : null;
-    const page = location.pathname.split('/').pop().toLowerCase();
-    const $ = id => document.getElementById(id);
-    const text = value => String(value ?? '');
-    const esc = value => typeof safe === 'function' ? safe(value) : text(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const draftKey = person ? `creditbridge_application_draft_${person.id}` : '';
-    const stepPages = ['apply.html','program.html','module.html','performance.html','documents.html','target-module.html','review.html','signature.html'];
-    const currentTime = () => new Date().toISOString();
-    let submissionCompleted = false; // Prevent pagehide from recreating a submitted draft.
-    const readDraft = () => {
-        try { return JSON.parse(localStorage.getItem(draftKey) || '{}') || {}; }
-        catch (_) { return {}; }
-    };
-    const saveDraft = draft => { draft.updatedAt = currentTime(); localStorage.setItem(draftKey, JSON.stringify(draft)); };
-    const isStudent = person && person.role === 'student';
-    const isEmployee = person && ['lecturer','admin'].includes(person.role);
-    const getModules = application => Array.isArray(application.modules) && application.modules.length
-        ? application.modules : [{
-            originalCourse: application.originalCourse || '',
-            originalCourseGerman: application.originalCourseGerman || '',
-            originalCourseEnglish: application.originalCourseEnglish || '',
-            targetCourse: application.targetCourse || '',
-            originalCredits: application.originalCredits || '',
-            sws: application.sws || '',
-            targetCredits: application.targetCredits || '',
-            moduleType: application.moduleType || '',
-            documentTypes: application.documentTypes || [],
-            documentFileNames: application.documentFileNames || {},
-            documentStorageId: application.documentStorageId || '',
-            description: application.description || '',
-            assignedLecturers: application.assignedLecturers || (typeof reviewersForApplication === 'function' ? reviewersForApplication(application) : ['Demo Lecturer']),
-            lecturerReviews: application.lecturerReviews || []
-        }];
-    const assignedToModule = (program, targetCourse) => {
-        return findModuleLecturers(program, targetCourse);
-    };
-    const required = module => Array.isArray(module.assignedLecturers) ? module.assignedLecturers : [];
-    const approvals = module => new Set((module.lecturerReviews || [])
-        .filter(x => x.decision === 'recognized' && required(module).includes(x.reviewer)).map(x => x.reviewer)).size;
-    const moduleStatus = (module, application) => {
-        if ((module.lecturerReviews || []).some(x => x.decision === 'not-recognized')) return 'Rejected';
-        if (!required(module).length) return 'Assignment pending';
-        if (approvals(module) === required(module).length) return application?.status === 'Approved' ? 'Approved' : 'Lecturer approved';
-        return 'Pending review';
-    };
-    const allApproved = application => getModules(application).every(module => required(module).length && moduleStatus(module,application) !== 'Rejected' && approvals(module) === required(module).length);
-    const allReviewers = application => [...new Set(getModules(application).flatMap(module => required(module)))];
-    const eligible = (application, module, reviewer) => application.status === 'Pending review' &&
-        required(module).includes(reviewer) && !module.lecturerReviews?.some(x => x.reviewer === reviewer);
-    const historyEvent = (application, label, actor, comment='', module='') => {
-        application.history = application.history || [];
-        application.history.push({at:currentTime(), label, actor, comment, module});
-    };
-    const itemsFromDraft = draft => Array.isArray(draft.moduleEntries) ? [...draft.moduleEntries] : [];
-    const attachments = window.CreditBridgeAttachments || null;
-    const attachmentError = 'Supporting documents could not be saved. Reload this page and upload the files again.';
-    const makeModuleFromDraft = draft => ({
-        originalCourse: draft.moduleEnglish || draft.moduleGerman || '',
-        originalCourseGerman: draft.moduleGerman || '',
-        originalCourseEnglish: draft.moduleEnglish || '',
-        originalCredits: draft.ects || '',
-        completedSemester: draft.completedSemester || '',
-        completedYear: draft.completedYear || '',
-        sws: draft.sws || '',
-        targetCourse: draft.targetModule || '',
-        targetCredits: draft.targetModuleEcts || '',
-        targetModuleId: draft.targetModuleId || '',
-        moduleType: draft.moduleType || '',
-        documentTypes: draft.documentTypes || [],
-        documentFileNames: draft.documentFileNames || {},
-        documentStorageId: draft.documentStorageId || '',
-        description: draft.moduleContact || draft.otherDocuments || '',
-        assignedLecturers: assignedToModule(draft.program || '', draft.targetModule || ''),
-        lecturerReviews: []
-    });
-    const error = (parent, message) => {
-        let node = $('cbWorkflowError');
-        if (!node) { node = document.createElement('p'); node.id='cbWorkflowError'; node.className='cb-alert'; node.setAttribute('role','alert'); parent.prepend(node); }
-        node.textContent = message;
-        node.scrollIntoView({behavior:'smooth', block:'nearest'});
-    };
-    const removeError = () => $('cbWorkflowError')?.remove();
-    const draftFields = {
-        'apply.html': [['universityName','university']],
-        'module.html': [['moduleGerman','moduleGerman'],['moduleEnglish','moduleEnglish'],['completedSemester','completedSemester'],['completedYear','completedYear']],
-        'performance.html': [['moduleSws','sws'],['moduleEcts','ects']],
-        'documents.html': [['moduleContact','moduleContact'],['otherDocumentText','otherDocuments']],
-        'target-module.html': [['targetModuleName','targetModuleId']],
-        'signature.html': [['studentSignatureDate','studentSignatureDate']]
-    };
-    const saveVisible = () => {
-        if (!isStudent || submissionCompleted) return;
-        const draft = readDraft();
-        for (const [id,key] of draftFields[page] || []) {
-            const el = $(id);
-            if (el) draft[key] = el.value;
-        }
-        if (page === 'program.html') draft.program = document.querySelector('input[name="program"]:checked')?.value || draft.program;
-        if (page === 'target-module.html') {
-            const sel = $('targetModuleName');
-            const choice = sel?.selectedOptions[0];
-            if (choice?.value) draft.targetModule = choice.textContent.trim();
-            draft.moduleType = document.querySelector('input[name="moduleType"]:checked')?.value || draft.moduleType;
-        }
-        if (page === 'documents.html') {
-            const legacyDocumentTypes = [...document.querySelectorAll('input[name="documentType"]')];
-            if (legacyDocumentTypes.length) {
-                draft.documentTypes = legacyDocumentTypes.filter(e => e.checked).map(e => e.value);
+"use strict";
+// Browser-only interactive demonstration. No backend or database server is included.
+const KEY='creditbridge_demo_v1';
+function getDB(){
+    function freshDB(){
+        const fresh={users:[
+            {id:1,username:'shuvo07',firstName:'Shuvo',lastName:'',name:'Shuvo',number:'',email:'shuvo07',password:'12345678',role:'student'},
+            {id:2,name:'Demo Lecturer',email:'lecturer@demo.test',password:'123',role:'lecturer'},
+            {id:3,name:'Study Center',email:'admin@demo.test',password:'123',role:'admin'}
+        ],applications:[],nextUser:4,nextApplication:1};
+        setDB(fresh);
+        return fresh;
+    }
+    try{
+        const data=JSON.parse(localStorage.getItem(KEY));
+        if(data&&Array.isArray(data.users)&&Array.isArray(data.applications)){
+            const hasPrimary=data.users.some(u=>(u.username||'').toLowerCase()==='shuvo07' || (u.email||'').toLowerCase()==='shuvo07');
+            if(!hasPrimary){
+                data.users.unshift({id:data.nextUser||1,username:'shuvo07',firstName:'Shuvo',lastName:'',name:'Shuvo',number:'',email:'shuvo07',password:'12345678',role:'student'});
+                data.nextUser=(Math.max(...data.users.map(u=>Number(u.id)||0))+1);
+            }else{
+                data.users=data.users.map(u=>((u.username||'').toLowerCase()==='shuvo07' || (u.email||'').toLowerCase()==='shuvo07') ? {...u,username:'shuvo07',email:u.email||'shuvo07',password:'12345678',role:'student'} : u);
             }
-            draft.documentFileNames = draft.documentFileNames || {};
-            for (const id of ['gradeSheetFiles','moduleCatalogueFiles','courseDescriptionFiles','otherSupportingFiles']) {
-                if ($(id)?.files?.length) draft.documentFileNames[id] = [...$(id).files].map(f=>f.name);
-            }
-        }
-        draft.lastPage = page;
-        saveDraft(draft);
-    };
-    // Student drafts can be continued or discarded from their own dashboard.
-    if (isStudent && stepPages.includes(page)) {
-        const draft = readDraft();
-        draft.lastPage = page;
-        saveDraft(draft);
-        const actions = document.querySelector('.university-navigation') || document.querySelector('main .actions');
-        if (actions) {
-            const button = document.createElement('button');
-            button.type = 'button'; button.className = 'btn secondary'; button.textContent = 'Save draft';
-            button.addEventListener('click', () => {
-                saveVisible();
-                location.href = 'student-dashboard.html';
+            // Reassign existing pending Physics / Physics Lab requests to Wolfgang Schauer.
+            // Do not silently rewrite completed lecturer decisions or finalized applications.
+            data.applications.forEach(application => {
+                if (application.program !== 'Industrial Engineering' || application.status !== 'Pending review') return;
+                const modules = Array.isArray(application.modules) && application.modules.length ? application.modules : [application];
+                let changed = false;
+                modules.forEach((module, index) => {
+                    const label = String(module.targetCourse || '');
+                    if (!/\bIE-(2206|3201)\b/i.test(label) || (module.lecturerReviews || []).length) return;
+                    if (JSON.stringify(module.assignedLecturers || []) === JSON.stringify(['Wolfgang Schauer'])) return;
+                    module.assignedLecturers = ['Wolfgang Schauer'];
+                    if (Array.isArray(application.reviewNotifications)) {
+                        application.reviewNotifications = application.reviewNotifications.filter(n => n.moduleIndex !== index);
+                        application.reviewNotifications.push({reviewer:'Wolfgang Schauer',moduleIndex:index,
+                            message:'New request: ' + label,createdAt:new Date().toISOString(),acknowledged:false});
+                    }
+                    changed = true;
+                });
+                if (changed) application.assignedLecturers = [...new Set(modules.flatMap(m => m.assignedLecturers || []))];
             });
-            actions.append(button);
-        }
-        // Keep partially entered text when the student moves between pages or closes a tab.
-        // Only serializable form values are retained. Browser File objects are not stored.
-        let draftSaveTimer;
-        const queueDraftSave = event => {
-            if (!event.target.matches('input:not([type=file]), textarea, select')) return;
-            clearTimeout(draftSaveTimer);
-            draftSaveTimer = setTimeout(saveVisible, 350);
-        };
-        document.addEventListener('input', queueDraftSave);
-        document.addEventListener('change', queueDraftSave);
-        window.addEventListener('pagehide', () => {
-            clearTimeout(draftSaveTimer);
-            if (!submissionCompleted) saveVisible();
-        });
-    }
-    if (page === 'student-dashboard.html' && isStudent) {
-        const draft = readDraft();
-        const parent = $('stats') || document.querySelector('main');
-        const host = document.createElement('section'); host.id='cbDraftSection'; host.className='cb-strip';
-        host.innerHTML = `<h2>My draft</h2><p class="muted small" id="cbDraftDescription"></p><div class="cb-toolbar" id="cbDraftActions"></div>`;
-        parent.insertAdjacentElement('afterend',host);
-        const filled = Object.keys(draft).some(key => !['lastPage','updatedAt'].includes(key));
-        $('cbDraftDescription').textContent = filled
-            ? `Last saved: ${draft.updatedAt ? new Date(draft.updatedAt).toLocaleString() : 'recently'} · ${itemsFromDraft(draft).length} completed module(s)`
-            : 'No saved draft. Start a new application when you are ready.';
-        if (filled) {
-            const newButton = $('newButton');
-            newButton?.addEventListener('click', event => {
-                if (!confirm('Start a new application? Your current draft will be discarded.')) {
-                    event.preventDefault();return;
-                }
-                localStorage.removeItem(draftKey);
+            // Keep demo employee accounts usable after updates in the same browser.
+            data.users.forEach(u => {
+                if (u.email === 'lecturer@demo.test' && u.role === 'lecturer') u.password = '123';
+                if (u.email === 'admin@demo.test' && u.role === 'admin') u.password = '123';
             });
-            const next = document.createElement('a'); next.className='btn';next.textContent='Continue draft';
-            next.href = stepPages.includes(draft.lastPage) ? draft.lastPage : 'apply.html';
-            const del = document.createElement('button');del.type='button';del.className='btn danger';del.textContent='Delete draft';
-            del.addEventListener('click', () => { if (confirm('Delete your saved application draft?')) {localStorage.removeItem(draftKey);location.reload();} });
-            $('cbDraftActions').append(next,del);
+            setDB(data);
+            return data;
         }
+    }catch(e){}
+    return freshDB();
+}
+function setDB(db){localStorage.setItem(KEY,JSON.stringify(db));}
+function user(){const id=Number(sessionStorage.getItem('creditbridge_uid'));return getDB().users.find(u=>u.id===id)||null;}
+function go(url){location.href=url;}
+function info(msg,good=false){const el=(document.getElementById('studentRegistration')?.classList.contains('hidden')===false ? document.getElementById('registrationMessage') : document.getElementById('message'));if(el){el.innerHTML='';const item=document.createElement('div');item.className='notice'+(good?' success':'');item.textContent=msg;el.appendChild(item);}}
+function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// Lecturer routing, derived from the "Lecturers" fields in the supplied THD module guides.
+// Names are identities for the local review queue; no email addresses are assumed.
+const MULTI_LECTURER_MODULES = {
+    "Industrial Engineering": {
+        "IE-16|Intercultural Management": [
+            "Prof. Dr. Michelle Cummings-Koether",
+            "Franziska Durner"
+        ],
+        "IE-37|Bachelor Module": [
+            "Prof. Dr. Michelle Cummings-Koether",
+            "Bernadette Busler",
+            "Franziska Durner"
+        ],
+        "IE-Elective|Process Optimization": [
+            "Prof. Markus Hainthaler",
+            "Prof. Dr. Tobias Bader"
+        ]
+    },
+    "Energy Systems Engineering": {
+        "ESE-10|Lab work in Natural Sciences": [
+            "Prof. Dr. Raimund Brotsack",
+            "Prof. Dr. Sascha Kreiskott"
+        ],
+        "ESE-11|Materials and Design": [
+            "Prof. Dr. Thorsten Gerdes",
+            "Prof. Markus Hainthaler"
+        ],
+        "ESE-21|Project Work II incl. Simulation and Design": [
+            "Prof. Dr. Rui Li",
+            "Prof. Dr. Stefan Mátéfi-Tempfli"
+        ],
+        "ESE-29|Power Grid Technologies": [
+            "Prof. Dr. Stefan Mátéfi-Tempfli",
+            "Wolfgang Schauer"
+        ],
+        "ESE-31|Smart Systems and Technologies": [
+            "Prof. Dr. Stefan Mátéfi-Tempfli",
+            "Wolfgang Schauer"
+        ],
+        "ESE-34|Grid Management": [
+            "Prof. Dr. Matthias Huber",
+            "Prof. Dr. Stefan Mátéfi-Tempfli"
+        ],
+        "ESE-Elective|Principles of Energy Systems Management": [
+            "Prof. Dr. Matthias Huber",
+            "Prof. Dr. Stefan Mátéfi-Tempfli"
+        ],
+        "ESE-Elective|Computer Simulation in Energy and Resource Economics": [
+            "Prof. Dr. Rui Li",
+            "Prof. Dr. Stefan Mátéfi-Tempfli"
+        ],
+        "ESE-Elective|Energy Economics Policy": [
+            "Prof. Dr. Matthias Huber",
+            "Prof. Dr. Stefan Mátéfi-Tempfli"
+        ],
+        "ESE-Elective|International Energy Regulations": [
+            "Prof. Dr. Matthias Huber",
+            "Prof. Dr. Stefan Mátéfi-Tempfli"
+        ],
+        "ESE-Elective|Process Optimization": [
+            "Prof. Markus Hainthaler",
+            "Norbert Sosnowsky"
+        ]
     }
-    // Every application uses one THD programme and its own module catalogue.
-    if (page === 'program.html' && isStudent) {
-        $('programForm')?.addEventListener('submit', event => {
-            const selected = document.querySelector('input[name="program"]:checked')?.value;
-            const draft = readDraft();
-            if (draft.program && selected && draft.program !== selected && itemsFromDraft(draft).length) {
-                event.preventDefault(); event.stopImmediatePropagation();
-                if (!confirm('Changing programmes removes modules chosen for the previous programme. Continue?')) return;
-                const fresh = {university:draft.university, program:selected, lastPage:'program.html'};
-                saveDraft(fresh);
-                location.href='module.html';
-            }
-        }, true);
+};
+const THD_MODULE_ASSIGNMENTS = {
+  "Industrial Engineering": {
+    "IE-01": [
+      "Ibrahim Bader"
+    ],
+    "IE-02": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "IE-03": [
+      "Prof. Dr. Raimund Brotsack"
+    ],
+    "IE-04": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-05": [
+      "Prof. Dr. Tobias Bader"
+    ],
+    "IE-06": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-08": [
+      "Ibrahim Bader"
+    ],
+    "IE-09": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "IE-10": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "IE-11": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "IE-2206": ["Wolfgang Schauer"],
+    "IE-3201": ["Wolfgang Schauer"],
+    "IE-14": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-15": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "IE-16": [
+      "Prof. Dr. Michelle Cummings-Koether",
+      "Franziska Durner"
+    ],
+    "IE-17": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-18": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-20": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-21": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "IE-22": [
+      "Prof. Markus Hainthaler"
+    ],
+    "IE-23": [
+      "Prof. Dr. Rui Li"
+    ],
+    "IE-24": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "IE-27": [
+      "Prof. Dr. Rui Li"
+    ],
+    "IE-28": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "IE-29": [
+      "Prof. Markus Hainthaler"
+    ],
+    "IE-30": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "IE-31": [
+      "Prof. Dr. Raimund Brotsack"
+    ],
+    "IE-32": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "IE-37": [
+      "Prof. Dr. Michelle Cummings-Koether",
+      "Bernadette Busler",
+      "Franziska Durner"
+    ],
+    "IE-Elective": [
+      "Prof. Dr. Tobias Bader"
+    ]
+  },
+  "Energy Systems Engineering": {
+    "ESE-01": [
+      "Ibrahim Bader"
+    ],
+    "ESE-02": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "ESE-03": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-04": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "ESE-05": [
+      "Prof. Dr. Raimund Brotsack"
+    ],
+    "ESE-07": [
+      "Ibrahim Bader"
+    ],
+    "ESE-08": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "ESE-09": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-10": [
+      "Prof. Dr. Raimund Brotsack",
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "ESE-11": [
+      "Prof. Dr. Thorsten Gerdes",
+      "Prof. Markus Hainthaler"
+    ],
+    "ESE-12": [
+      "Prof. Dr. Michelle Cummings-Koether"
+    ],
+    "ESE-15": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "ESE-16": [
+      "Prof. Dr. Rui Li"
+    ],
+    "ESE-17": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-18": [
+      "Prof. Dr. Sascha Kreiskott"
+    ],
+    "ESE-19": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-21": [
+      "Prof. Dr. Rui Li",
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-22": [
+      "Prof. Dr. Raimund Brotsack"
+    ],
+    "ESE-23": [
+      "Prof. Dr. Raimund Brotsack"
+    ],
+    "ESE-24": [
+      "Prof. Markus Hainthaler"
+    ],
+    "ESE-26": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-28": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-29": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli",
+      "Wolfgang Schauer"
+    ],
+    "ESE-30": [
+      "Wolfgang Schauer"
+    ],
+    "ESE-31": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli",
+      "Wolfgang Schauer"
+    ],
+    "ESE-32": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-33": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-34": [
+      "Prof. Dr. Matthias Huber",
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-35": [
+      "Anna Marquardt"
+    ],
+    "ESE-36": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-37": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "ESE-Elective": [
+      "Prof. Markus Hainthaler"
+    ]
+  }
+};
+const THD_ELECTIVE_ASSIGNMENTS = {
+  "Industrial Engineering": {
+    "Business Planning and Start-Up Management": [
+      "Prof. Dr. Tobias Bader"
+    ],
+    "Data Acquisition and Processing": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "Energy and Resource Efficiency": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Energy Markets": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Globalisation": [
+      "Prof. Dr. Matthias Huber"
+    ],
+    "Industrial Automation and Information Technology": [
+      "Wolfgang Schauer"
+    ],
+    "Insights into the Corporate World": [
+      "Claudia Hageneder"
+    ],
+    "Modelling Theory": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "Operational Processes": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Process Engineering": [
+      "Prof. Markus Hainthaler"
+    ],
+    "Process Optimization": [
+      "Prof. Markus Hainthaler"
+    ]
+  },
+  "Energy Systems Engineering": {
+    "Process Engineering": [
+      "Prof. Markus Hainthaler"
+    ],
+    "Advanced Fluid and Energy Technology": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Principles of Energy Systems Management": [
+      "Prof. Dr. Matthias Huber"
+    ],
+    "Operational Processes": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Computer Simulation in Energy and Resource": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Energy Economics Policy": [
+      "Prof. Dr. Matthias Huber"
+    ],
+    "International Energy Regulations": [
+      "Prof. Dr. Matthias Huber"
+    ],
+    "Health Safety Environment": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Technology and Intellectual Property Rights": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "MRO-Strategies and Process Reliability": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "Entrepreneurship": [
+      "Prof. Dr. Stefan Mátéfi-Tempfli"
+    ],
+    "Strategic Planning and Project Management": [
+      "Prof. Dr. Michelle Cummings-Koether"
+    ],
+    "Finance and Accounting": [
+      "Prof. Dr. Robert Feicht"
+    ],
+    "Safety and Security in Energy Systems": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Energy and Ressource Efficiency": [
+      "Prof. Dr. Rui Li"
+    ],
+    "Process Optimization": [
+      "Prof. Markus Hainthaler"
+    ],
+    "Modelling Theory": [
+      "Prof. Dr. Robert Feicht"
+    ]
+  }
+};
+const REVIEWER_CHOICE_KEY = 'creditbridge_reviewer';
+const DEFAULT_REVIEWER = 'Demo Lecturer';
+function reviewerList() {
+    return [DEFAULT_REVIEWER, ...new Set([
+        ...Object.values(MULTI_LECTURER_MODULES).flatMap(modules => Object.values(modules).flat()),
+        ...Object.values(THD_MODULE_ASSIGNMENTS).flatMap(modules => Object.values(modules).flat()),
+        ...Object.values(THD_ELECTIVE_ASSIGNMENTS).flatMap(modules => Object.values(modules).flat())
+    ])].sort((a,b) =>
+        a === DEFAULT_REVIEWER ? -1 : b === DEFAULT_REVIEWER ? 1 : a.localeCompare(b));
+}
+function chosenReviewer() {
+    const value = sessionStorage.getItem(REVIEWER_CHOICE_KEY) || DEFAULT_REVIEWER;
+    return reviewerList().includes(value) ? value : DEFAULT_REVIEWER;
+}
+function reviewersForApplication(application) {
+    // Persist assigned reviewers on submission, so subsequent editing won't re-route decisions.
+    if (Array.isArray(application.assignedLecturers) && application.assignedLecturers.length)
+        return application.assignedLecturers;
+    const programme = application.program || '';
+    const moduleName = (application.targetCourse || '').trim();
+    const collection = MULTI_LECTURER_MODULES[programme] || {};
+    const match = Object.entries(collection).find(([key]) =>
+        key.replace('|', ': ').toLowerCase() === moduleName.toLowerCase());
+    return match ? match[1] : [DEFAULT_REVIEWER];
+}
+// Return lecturer names for a selected module, retaining every named co-lecturer.
+// Missing assignments are left unassigned and flagged rather than sent to a random lecturer.
+function findModuleLecturers(program, targetCourse) {
+    const label = String(targetCourse || '').trim();
+    const multi = MULTI_LECTURER_MODULES[program] || {};
+    const norm = x => String(x).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+    const special = Object.entries(multi).find(([key]) => norm(key.replace('|', ': ')) === norm(label));
+    if (special) return [...new Set(special[1])];
+    const [code, ...rest] = label.split(':');
+    const name = rest.join(':').trim();
+    let names = [];
+    if (/elective/i.test(code || '')) {
+        const electives = THD_ELECTIVE_ASSIGNMENTS[program] || {};
+        const entry = Object.entries(electives).find(([key]) => norm(key) === norm(name) ||
+            (norm(key).length > 18 && norm(name).startsWith(norm(key))));
+        names = entry?.[1] || [];
+    } else {
+        names = THD_MODULE_ASSIGNMENTS[program]?.[String(code||'').trim()] || [];
     }
-    // Attach a different set of previous-study modules to the same application.
-    if (page === 'target-module.html' && isStudent) {
-        const form = $('targetModuleForm');
-        const controls = form?.querySelector('.actions') || form?.querySelector('.university-navigation');
-        if (form && controls) {
-            const another = document.createElement('button');
-            another.type='button';another.id='cbAddModule';another.className='btn secondary';another.textContent='+ Save and add another course';
-            controls.append(another);
-            const note = document.createElement('div');note.className='cb-strip';note.id='cbSavedModules';note.setAttribute('aria-live','polite');
-            form.parentElement.insertBefore(note,form);
-            const render = () => {
-                const entries=itemsFromDraft(readDraft());
-                note.innerHTML = `<strong>${entries.length} module${entries.length===1?'':'s'} saved in this application</strong>`+
-                    (entries.length ? `<ol class="cb-list">${entries.map((m,i)=>`<li class="cb-module"><strong>${esc(m.originalCourse || 'Previous course')}</strong> → ${esc(m.targetCourse || 'THD module')} <span class="cb-hint">(${esc(m.originalCredits)} ECTS)</span><div class="cb-toolbar"><button class="btn secondary" type="button" data-edit-saved="${i}">Edit</button><button class="btn danger" type="button" data-remove-saved="${i}">Remove</button></div></li>`).join('')}</ol>` : '<p class="muted">Your first selected course will appear here.</p>');
-                note.querySelectorAll('[data-edit-saved]').forEach(button=>button.addEventListener('click',async ()=>{
-                    const state=readDraft(),i=Number(button.dataset.editSaved),m=state.moduleEntries?.[i];
-                    if(!m)return;
-                    state.editModuleIndex=i;
-                    Object.assign(state,{moduleGerman:m.originalCourseGerman,moduleEnglish:m.originalCourseEnglish,ects:m.originalCredits,sws:m.sws,targetModule:m.targetCourse,targetModuleId:m.targetModuleId,targetModuleEcts:m.targetCredits,moduleType:m.moduleType,documentTypes:m.documentTypes,documentFileNames:m.documentFileNames,moduleContact:m.description});
-                    saveDraft(state);
-                    try { if (!attachments) throw new Error(attachmentError); await attachments.restore(person.id, m); }
-                    catch (problem) { error(form, problem.message); return; }
-                    location.href='module.html';
-                }));
-                note.querySelectorAll('[data-remove-saved]').forEach(button=>button.addEventListener('click',async ()=>{
-                    if (!confirm('Remove this course from your application?')) return;
-                    const state=readDraft();const removed=state.moduleEntries?.splice(Number(button.dataset.removeSaved),1)[0];saveDraft(state);
-                    if (removed && attachments) await attachments.removeModule(removed);
-                    render();
-                }));
-            };
-            render();
-            const persistCurrent = async () => {
-                removeError();
-                const selected = $('targetModuleName')?.selectedOptions?.[0];
-                const category = document.querySelector('input[name="moduleType"]:checked');
-                const state = readDraft();
-                if (!selected?.value || !category) {error(form,'Select a THD module and its module type.');return false;}
-                if (!(state.moduleEnglish || state.moduleGerman)?.trim() || !(Number(state.ects)>0) || (state.sws && Number(state.sws)<0)) {error(form,'Enter a previous course name and valid ECTS/SWS values.');return false;}
-                state.targetModule = selected.textContent.trim();
-                state.targetModuleId = selected.value;
-                state.targetModuleEcts = $('targetModuleInfo')?.textContent.match(/\d+(?:[.,]\d+)?\s+ECTS/i)?.[0]?.replace(/\s+ECTS/i,'') || state.targetModuleEcts || '';
-                state.moduleType = category.value;
-                const entries=itemsFromDraft(state);
-                const item=makeModuleFromDraft(state);
-                const position=Number(state.editModuleIndex);
-                const existing = Number.isInteger(position) && position>=0 && position<entries.length ? entries[position] : null;
-                item.documentStorageId = existing?.documentStorageId || (attachments && attachments.newId());
-                try {
-                    if (!attachments || !item.documentStorageId) throw new Error(attachmentError);
-                    await attachments.snapshot(person.id, item.documentStorageId, item.documentFileNames);
-                } catch (problem) { error(form, problem.message || attachmentError); return false; }
-                if (existing) entries[position]=item;
-                else entries.push(item);
-                state.moduleEntries=entries;
-                delete state.editModuleIndex;
-                saveDraft(state);
-                return true;
-            };
-            form.addEventListener('submit', async event => {
-                event.stopImmediatePropagation();event.preventDefault();
-                if (await persistCurrent()) location.href='review.html';
-            }, true);
-            another.addEventListener('click', async () => {
-                if (!form.reportValidity() || !await persistCurrent()) return;
-                await attachments.clearDraft(person.id);
-                const state=readDraft();
-                for (const field of ['moduleGerman','moduleEnglish','completedSemester','completedYear','sws','ects','targetModuleId','targetModule','targetModuleEcts','moduleType','documentTypes','documentFileNames','moduleContact','otherDocuments']) delete state[field];
-                saveDraft(state);location.href='module.html';
-            });
+    return [...new Set(names.filter(Boolean))];
+}
+function lecturerReviews(application) {
+    return Array.isArray(application.lecturerReviews) ? application.lecturerReviews : [];
+}
+function lecturerProgress(application) {
+    // Count decisions per module. The same lecturer may review several distinct modules.
+    if (Array.isArray(application.modules) && application.modules.length) {
+        const required = application.modules.flatMap(module => module.assignedLecturers || []);
+        const reviews = application.modules.flatMap(module => module.lecturerReviews || []);
+        const approved = application.modules.reduce((count, module) => {
+            const accepted = new Set((module.lecturerReviews || [])
+                .filter(entry => entry.decision === 'recognized').map(entry => entry.reviewer));
+            return count + (module.assignedLecturers || []).filter(name => accepted.has(name)).length;
+        }, 0);
+        return { required, reviews, approved };
+    }
+    const required = reviewersForApplication(application);
+    const reviews = lecturerReviews(application);
+    const accepted = reviews.filter(entry => entry.decision === 'recognized' && required.includes(entry.reviewer));
+    return { required, reviews, approved: new Set(accepted.map(item => item.reviewer)).size };
+}
+function hasAllLecturerApprovals(application) {
+    const progress = lecturerProgress(application);
+    // Old one-lecturer records remain viewable; multi-lecturer approvals require separate records.
+    if (progress.required.length === 1 && application.status === 'Lecturer approved' &&
+        !Array.isArray(application.lecturerReviews)) return true;
+    return progress.approved === progress.required.length;
+}
+function canLecturerReview(application, name = chosenReviewer()) {
+    return application.status === 'Pending review' && (Array.isArray(application.modules) ? application.modules.some(m => (m.assignedLecturers || []).includes(name) && !(m.lecturerReviews || []).some(r => r.reviewer === name)) : reviewersForApplication(application).includes(name) && !lecturerReviews(application).some(entry => entry.reviewer === name));
+}
+
+const current=user();
+if(current){document.getElementById('loginNav')?.classList.add('hidden');document.getElementById('logoutNav')?.classList.remove('hidden');}
+document.getElementById('registerNav')?.classList.add('hidden');
+document.querySelectorAll('nav a[href="apply.html"]').forEach(link => {
+    const allowed = Boolean(current && current.role === 'student');
+    link.hidden = !allowed;
+    link.classList.toggle('hidden', !allowed);
+});
+document.getElementById('logoutNav')?.addEventListener('click',e=>{e.preventDefault();sessionStorage.removeItem('creditbridge_uid');go('index.html');});
+const register=document.getElementById('registerForm');if(register){go('login.html?role=student');}
+// Both roles sign in on login.html; register.html is only for creating student accounts.
+// The role is validated after the user selects Student or Employee.
+const login = document.getElementById('loginForm');
+
+// On login.html, choose Student or Employee first, then show the sign-in form.
+const roleSelection = document.getElementById('roleSelection');
+const roleSignIn = document.getElementById('roleSignIn');
+if (roleSelection && roleSignIn) {
+    const chosenRole = new URLSearchParams(location.search).get('role');
+    const validRole = chosenRole === 'student' || chosenRole === 'employee';
+    roleSelection.classList.toggle('hidden', validRole);
+    roleSignIn.classList.toggle('hidden', !validRole);
+    if (validRole) {
+        document.getElementById('loginRole').value = chosenRole;
+        document.getElementById('signInRoleHeading').textContent =
+            chosenRole === 'student' ? 'STUDENT ACCESS' : 'EMPLOYEE ACCESS';
+        document.getElementById('studentSignupLink')?.classList.toggle(
+            'hidden', chosenRole !== 'student'
+        );
+    }
+}
+if(login)login.addEventListener('submit',e=>{e.preventDefault();const v=Object.fromEntries(new FormData(login));const identifier=String(v.identifier||v.email||'').trim().toLowerCase();const u=getDB().users.find(u=>(((u.email||'').toLowerCase()===identifier)||((u.username||'').toLowerCase()===identifier))&&u.password===v.password);if(!u)return info('Incorrect username/email or password.');if((v.role==='student'&&u.role!=='student')||(v.role==='employee'&&u.role==='student'))return info('This account does not match the selected login type.');sessionStorage.setItem('creditbridge_uid',u.id);go(u.role==='student'?'student-dashboard.html':u.role==='lecturer'?'lecturer-dashboard.html':'exam-board-dashboard.html');});
+// Employees review requests from their dashboard; only students create new applications.
+// Hide all "New application" links for logged-in staff accounts.
+if (current && current.role !== 'student') {
+    document.querySelectorAll('a[href="apply.html"]').forEach(link => link.classList.add('hidden'));
+}
+// Application pages each own their form handlers in their HTML files.
+// The shared workflow.js manages multi-module submissions and staff decisions.
+
+// Return the visible colour class for an application status.
+function statusClass(status) {
+    return status === 'Approved' ? 'approved' :
+        (status === 'Rejected' || status === 'Lecturer rejected') ? 'rejected' : '';
+}
+
+// Track the staff filter during page refreshes and reviewer changes.
+let employeeQueueFilter = sessionStorage.getItem('creditbridge_queue_filter') || 'all';
+
+function queueCategory(application) {
+    if (application.status === 'Approved') return 'approved';
+    if (['Rejected', 'Lecturer rejected'].includes(application.status)) return 'rejected';
+    if (application.status === 'Lecturer approved' && hasAllLecturerApprovals(application)) return 'ready';
+    return lecturerProgress(application).approved > 0 ? 'waiting' : 'pending';
+}
+
+// Show a separate decision status for every lecturer named in the module guide.
+function reviewerStatusMarkup(application) {
+    const progress = lecturerProgress(application);
+    return `<ul class="reviewer-status-list" aria-label="Lecturer approvals">
+        ${progress.required.map(name => {
+            const review = progress.reviews.find(item => item.reviewer === name);
+            const state = review?.decision === 'recognized' ? 'Approved'
+                : review?.decision === 'not-recognized' ? 'Rejected' : 'Pending';
+            const style = state === 'Approved' ? 'approved' : state === 'Rejected' ? 'rejected' : '';
+            return `<li><span class="reviewer-name">${safe(name)}</span>
+                <span class="tag ${style}">${state}</span></li>`;
+        }).join('')}
+    </ul>`;
+}
+
+// Render student applications and the filtered employee decision queue.
+function renderDashboard() {
+    const body = document.getElementById('applicationsBody');
+    if (!body) return;
+    if (!current) { go('login.html'); return; }
+    const employeePage = Boolean(document.getElementById('staffReviewLinks'));
+    if (employeePage && current.role === 'student') { go('student-dashboard.html'); return; }
+    if (employeePage && location.pathname.endsWith('lecturer-dashboard.html') && current.role !== 'lecturer') { go('exam-board-dashboard.html'); return; }
+    if (employeePage && location.pathname.endsWith('exam-board-dashboard.html') && current.role !== 'admin') { go('lecturer-dashboard.html'); return; }
+    if (!employeePage && current.role !== 'student') { go(current.role==='lecturer'?'lecturer-dashboard.html':'exam-board-dashboard.html'); return; }
+
+    const db = getDB();
+    const all = db.applications;
+    const fullName = [current.firstName, current.lastName].filter(Boolean).join(' ') || current.name || current.email;
+    document.getElementById('welcome').textContent = 'Welcome, ' + fullName + '.';
+    document.getElementById('roleText').textContent = ({
+        student: 'Student portal', lecturer: 'Lecturer review portal', admin: 'Examination board review portal'
+    })[current.role] || 'Employee portal';
+    document.getElementById('dashboardHeading').textContent =
+        employeePage ? 'Applications and decisions' : 'My applications';
+    document.getElementById('newButton')?.classList.toggle('hidden', employeePage);
+
+    // The lecturer inbox includes current and earlier decisions for the selected reviewer.
+    // A lecturer receives one independent inbox entry for every assigned module.
+    if (employeePage && current.role === 'lecturer') {
+        let inbox = document.getElementById('moduleNotifications');
+        if (!inbox) {
+            inbox = document.createElement('section');
+            inbox.id = 'moduleNotifications';
+            inbox.className = 'card';
+            const panel = document.getElementById('reviewerPanel');
+            (panel || document.getElementById('stats')).insertAdjacentElement('afterend', inbox);
         }
-    }
-    if (page === 'review.html' && isStudent) {
-        const draft = readDraft();
-        if (!itemsFromDraft(draft).length && draft.targetModule && draft.ects) {
-            draft.moduleEntries = [makeModuleFromDraft(draft)];
-            saveDraft(draft);
-        }
-        const entries=itemsFromDraft(draft);
-        const host=document.createElement('section');host.className='cb-strip';host.id='cbReviewModules';
-        host.innerHTML='<h2>Modules in this application</h2><div id="cbModuleList"></div><div class="cb-toolbar" id="cbModuleActions"></div>';
-        const target=$('nextToSignature');
-        (target?.closest('.actions') || target?.parentElement)?.insertAdjacentElement('beforebegin',host);
-        const render=()=>{
-            const items=itemsFromDraft(readDraft());
-            $('cbModuleList').innerHTML=items.length?`<ul class="cb-list">${items.map((m,i)=>`<li class="cb-module"><h3>${i+1}. ${esc(m.originalCourse)} → ${esc(m.targetCourse)}</h3><div class="cb-meta"><span>Previous: ${esc(m.originalCourseGerman || m.originalCourse)}</span><span>${esc(m.completedSemester||'')} ${esc(m.completedYear||'')} · ${esc(m.originalCredits)} ECTS / ${esc(m.sws)} SWS</span><span>${esc(m.moduleType)}</span></div>
-                    <p class="cb-hint"><strong>Lecturers:</strong> ${esc(required(m).join(', '))}</p>
-                    <p class="cb-hint"><strong>Documents:</strong> ${esc(Object.values(m.documentFileNames||{}).flat().join(', ') || 'None')}</p>
-                    <div class="cb-toolbar"><button class="btn secondary" type="button" data-edit="${i}">Edit module</button><button class="btn danger" type="button" data-delete="${i}">Remove</button></div></li>`).join('')}</ul>`:'<p>No modules selected yet.</p>';
-            $('cbModuleList').querySelectorAll('[data-edit]').forEach(button=>button.addEventListener('click',async ()=>{
-                const index=Number(button.dataset.edit), draft=readDraft(),m=draft.moduleEntries[index];
-                draft.editModuleIndex=index;
-                Object.assign(draft,{moduleGerman:m.originalCourseGerman,moduleEnglish:m.originalCourseEnglish,ects:m.originalCredits,sws:m.sws,targetModule:m.targetCourse,targetModuleId:m.targetModuleId || '',targetModuleEcts:m.targetCredits,moduleType:m.moduleType,documentTypes:m.documentTypes,documentFileNames:m.documentFileNames,moduleContact:m.description});
-                // Restore the module's programme catalogue ID by finding its code and name.
-                const code=m.targetCourse.split(':')[0];
-                const cat=$('catalogueData');
-                if(cat){ /* The target-module page restores catalogue identifiers when reopened. */ }
-                saveDraft(draft);
-                try { if (!attachments) throw new Error(attachmentError); await attachments.restore(person.id, m); }
-                catch (problem) { error(host, problem.message); return; }
-                location.href='module.html';
-            }));
-            $('cbModuleList').querySelectorAll('[data-delete]').forEach(button=>button.addEventListener('click',async ()=>{
-                const draft=readDraft();
-                const removed=draft.moduleEntries.splice(Number(button.dataset.delete),1)[0];
-                saveDraft(draft);
-                if (removed && attachments) await attachments.removeModule(removed);
-                render();
-            }));
-        };
-        render();
-        if (entries.length > 1) {
-            // Details already shown in the per-module cards should not be mistaken for the whole batch.
-            ['selectedModuleGerman','selectedModuleEnglish','selectedSws','selectedEcts'].forEach(id =>
-                $(id)?.closest('.review-item')?.setAttribute('hidden',''));
-            document.querySelectorAll('section.review-group').forEach(section => {
-                if (['Supporting documents','Requested THD recognition'].includes(section.getAttribute('aria-label'))) section.hidden = true;
-            });
-        }
-        $('backToTargetModule')?.addEventListener('click', async (event) => {
-            event.preventDefault();
-            const draft = readDraft();
-            if (!itemsFromDraft(draft).length) return;
-            const index = draft.moduleEntries.length - 1;
-            const m = draft.moduleEntries[index];
-            draft.editModuleIndex = index;
-            Object.assign(draft,{moduleGerman:m.originalCourseGerman,moduleEnglish:m.originalCourseEnglish,
-                ects:m.originalCredits,sws:m.sws,targetModule:m.targetCourse,targetModuleId:m.targetModuleId || '',
-                targetModuleEcts:m.targetCredits,moduleType:m.moduleType,documentTypes:m.documentTypes,
-                documentFileNames:m.documentFileNames,moduleContact:m.description});
-            saveDraft(draft);
-            try { if (!attachments) throw new Error(attachmentError); await attachments.restore(person.id, m); }
-            catch (problem) { error(host, problem.message); return; }
-            location.href='target-module.html';
-        });
-        const add=document.createElement('a');add.className='btn secondary';add.textContent='+ Add module';add.href='module.html';
-        add.addEventListener('click',async (event)=>{
-            event.preventDefault();
-            if (attachments) await attachments.clearDraft(person.id);
-            const state=readDraft();
-            for(const field of ['moduleGerman','moduleEnglish','completedSemester','completedYear','sws','ects','targetModuleId','targetModule','targetModuleEcts','moduleType','documentTypes','documentFileNames','moduleContact','otherDocuments']) delete state[field];
-            delete state.editModuleIndex;
-            saveDraft(state);
-            location.href='module.html';
-        });
-        $('cbModuleActions').append(add);
-        target?.addEventListener('click',event=>{
-            event.stopImmediatePropagation();event.preventDefault();
-            if(!itemsFromDraft(readDraft()).length){error(host,'Add at least one module before signing.');return;}
-            location.href='signature.html';
-        },true);
-    }
-    // Validate file size and file type on the documents and signature steps.
-    const checkedFormats = ['pdf','jpg','jpeg','png','doc','docx'];
-    function validateUploads() {
-        const inputs = [...document.querySelectorAll('input[type="file"]')];
-        for (const input of inputs) {
-            const signature=input.id==='studentSignatureFile';
-            const formats=signature?['pdf','jpg','jpeg','png']:checkedFormats;
-            for (const file of input.files) {
-                const extension=file.name.split('.').pop().toLowerCase();
-                if(!formats.includes(extension)) return `${file.name}: unsupported file format.`;
-                if(file.size>(signature?5:10)*1024*1024) return `${file.name}: maximum ${signature?5:10} MB per file.`;
-            }
-            if(!signature && input.files.length>5) return `Choose no more than five files in ${input.id}.`;
-        }
-        return '';
-    }
-    if (page === 'documents.html' && isStudent) {
-        const form=$('documentsForm');
-        form?.addEventListener('submit',event=>{
-            const invalid=validateUploads();
-            const d=readDraft();
-            const chosen=(d.documentTypes || []).length > 0;
-            if (invalid || !chosen) {
-                event.preventDefault();event.stopImmediatePropagation();
-                error(form,invalid || 'Select at least one supporting document category.');
-            }
-        },true);
-        form?.querySelectorAll('input[type=file]').forEach(input=>input.addEventListener('change',()=>{
-            const problem=validateUploads();
-            if(problem)error(form,problem);else removeError();
+        const reviewer = chosenReviewer();
+        const requests = all.flatMap(app => (Array.isArray(app.modules) ? app.modules : [{
+            targetCourse: app.targetCourse, assignedLecturers: reviewersForApplication(app),
+            lecturerReviews: app.lecturerReviews || []
+        }]).flatMap((mod, index) => {
+            const assigned = mod.assignedLecturers || [];
+            const recorded = (mod.lecturerReviews || []).find(x => x.reviewer === reviewer);
+            if (!assigned.includes(reviewer) || recorded) return [];
+            if (!['Pending review'].includes(app.status)) return [];
+            return [{app,mod,index}];
         }));
+        inbox.innerHTML = `<h2>Module notifications <span class="tag">${requests.length}</span></h2>` +
+            (requests.length ? `<ul class="cb-list">${requests.map(({app,mod,index}) =>
+                `<li><strong>#${app.id}: ${safe(mod.targetCourse)}</strong> · ${safe(app.fullName)}
+                    <a class="btn" href="lecturer-review.html?id=${app.id}&module=${index}">Review module</a></li>`).join('')}</ul>` :
+                '<p class="muted">No new module requests for this lecturer.</p>');
     }
-    // Submit a single application containing all requested modules.
-    if (page === 'signature.html' && isStudent) {
-        const form=$('signatureForm');
-        form?.addEventListener('submit',async event=>{
-            event.preventDefault();event.stopImmediatePropagation();removeError();
-            if (form.dataset.submitting === 'true') return;
-            const err=validateUploads();
-            if(err){error(form,err);return;}
-            const selected=$('studentSignatureFile')?.files[0];
-            const dated=$('studentSignatureDate')?.value;
-            if (selected && selected.size === 0) {error(form,'The signature file is empty.');return;}
-            if(!selected || !dated){error(form,'Enter the date and choose a signature file.');return;}
-            const draft=readDraft();
-            const modules=itemsFromDraft(draft);
-            if(!draft.university || !draft.program || !modules.length){error(form,'Complete all application steps first.');return;}
-            const unassigned=modules.filter(m=>!Array.isArray(m.assignedLecturers)||!m.assignedLecturers.length);
-            if(unassigned.length){error(form,'Lecturer assignment is missing for: '+unassigned.map(m=>m.targetCourse).join(', ')+'. Please contact the study centre.');return;}
-            // Upload names are not enough. Submit only if every listed file is genuinely stored.
-            try {
-                if (!attachments) throw new Error(attachmentError);
-                for (const module of modules) await attachments.validateModule(module);
-            } catch (problem) { error(form, problem.message || attachmentError); return; }
-            // Avoid resubmitting a matching active request, even after refreshing the page.
-            const fingerprint = JSON.stringify({studentId:person.id,university:draft.university,program:draft.program,
-                modules:modules.map(m=>({course:m.originalCourse,target:m.targetModuleId||m.targetCourse,ects:m.originalCredits,year:m.completedYear})).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)))});
-            const currentDB=getDB();
-            const previous=currentDB.applications.find(a=>a.studentId===person.id &&
-                !['Withdrawn','Rejected','Lecturer rejected'].includes(a.status) && a.submissionFingerprint===fingerprint);
-            if(previous){
-                error(form,`This application was already submitted as #${previous.id}. Open your student dashboard instead of submitting it again.`);
-                return;
-            }
-            if (form.dataset.submitting === 'true') return;
-            if (!confirm(`Submit ${modules.length} course(s) for recognition? Please check all details before continuing.`)) return;
-            form.dataset.submitting='true';
-            const submitButton=form.querySelector('button[type=submit]');
-            if(submitButton){submitButton.disabled=true;submitButton.textContent='Submitting…';}
-            const message=$('signatureMessage');
-            if(message){message.classList.remove('hidden');message.textContent='Saving your application…';message.setAttribute('role','status');}
-            const db=getDB(),id=db.nextApplication++;
-            const studentName=[person.firstName,person.lastName].filter(Boolean).join(' ')||person.name||'';
-            const first=modules[0];
-            const application={
-                id,studentId:person.id,fullName:studentName,matriculationNumber:person.number||'',studentEmail:person.email,
-                institution:draft.university,program:draft.program,originalCourse:first.originalCourse,
-                originalCourseGerman:first.originalCourseGerman,originalCourseEnglish:first.originalCourseEnglish,
-                originalCredits:first.originalCredits,sws:first.sws,targetCourse:first.targetCourse,targetCredits:first.targetCredits,
-                moduleType:first.moduleType,documentTypes:first.documentTypes,documentFileNames:first.documentFileNames,
-                documentStorageId:first.documentStorageId,
-                description:first.description,modules,
-                signatureDate:dated,signatureFileName:selected.name,submissionFingerprint:fingerprint,
-                assignedLecturers:[...new Set(modules.flatMap(m=>required(m)))],lecturerReviews:[],
-                reviewNotifications:modules.flatMap((m,i)=>required(m).map(reviewer=>({reviewer,moduleIndex:i,message:`New request: ${m.targetCourse}`,createdAt:currentTime(),acknowledged:false}))),
-                status:'Pending review',createdAt:new Date().toLocaleString(),submittedAt:currentTime(),decisions:[],history:[]
-            };
-            historyEvent(application,'Submitted',studentName,`${modules.length} module(s) requested.`);
-            try {
-                db.applications.unshift(application);
-                setDB(db);
-            } catch (problem) {
-                form.dataset.submitting='false';
-                if(submitButton){submitButton.disabled=false;submitButton.textContent='Submit';}
-                error(form,'Could not save this application. Check browser storage and try again.');
-                return;
-            }
-            submissionCompleted = true;
-            localStorage.removeItem(draftKey);
-            location.href=`submitted.html?id=${id}`;
-        },true);
-    }
-    // Existing requests remain available, while multi-module requests have per-module decisions.
-    function renderModuleCards(application, interactive=false) {
-        return `<ul class="cb-list">${getModules(application).map((m,i)=>{
-            const state=moduleStatus(m,application),names=required(m);
-            const statusClass=state==='Rejected'?'rejected':state==='Approved'?'approved':'';
-            return `<li class="cb-module"><h3>${i+1}. ${esc(m.originalCourse)} → ${esc(m.targetCourse)}</h3>
-                <div class="cb-meta"><span>${esc(m.completedSemester||'')} ${esc(m.completedYear||'')} · ${esc(m.originalCredits)} ECTS · ${esc(m.sws)} SWS</span><span class="tag ${statusClass}">${esc(state)}</span><span>${approvals(m)}/${names.length} lecturer approvals</span></div>
-                <p class="cb-hint"><strong>Documents:</strong> ${esc(Object.values(m.documentFileNames||{}).flat().join(', ') || 'None selected')}</p>
-                ${m.description?`<p class="cb-hint"><strong>Course description / contact:</strong> ${esc(m.description)}</p>`:''}
-                <details class="cb-module-details"><summary>Lecturer decisions</summary><ul class="reviewer-status-list">${names.map(name=>{
-                    const decision=(m.lecturerReviews||[]).find(r=>r.reviewer===name);
-                    return `<li>${esc(name)}: <strong>${decision ? (decision.decision==='recognized'?'Approved':'Rejected') : 'Pending'}</strong>${decision?.grade?` · Grade ${esc(decision.grade)}`:''}${decision?.reason?` · ${esc(decision.reason)}`:''}</li>`;
-                }).join('')}</ul></details>
-                ${interactive&&person?.role==='lecturer'&&eligible(application,m,chosenReviewer())?`<a class="btn" href="lecturer-review.html?id=${application.id}&module=${i}">Review this module</a>`:''}</li>`;
-        }).join('')}</ul>`;
-    }
-    if (page === 'lecturer-review.html') {
-        const id=Number(new URLSearchParams(location.search).get('id'));
-        const index=Number(new URLSearchParams(location.search).get('module')||0);
-        const application=getDB().applications.find(a=>a.id===id);
-        const module=application&&getModules(application)[index];
-        const reviewer=chosenReviewer();
-        const canDecide=person?.role==='lecturer' && application && module && eligible(application,module,reviewer);
-        if(application && module){
-            $('applicationSummary').textContent=`Application #${id} · Module ${index+1}/${getModules(application).length}: ${module.targetCourse}`;
-            $('assignedLecturers').textContent=`Required lecturers: ${required(module).join(', ')} · ${approvals(module)}/${required(module).length} approved`;
-        }
-        if($('lecturerDecisionForm')) $('lecturerDecisionForm').hidden=!canDecide;
-        if(!canDecide && $('applicationSummary')) $('applicationSummary').textContent+=' · No review action available for this lecturer.';
-        $('lecturerDecisionForm')?.addEventListener('submit',event=>{
-            event.preventDefault();event.stopImmediatePropagation();removeError();
-            const decision=document.querySelector('input[name="decision"]:checked')?.value;
-            const grade=$('recognitionGrade')?.value.trim(),reason=$('rejectionReason')?.value.trim();
-            const date=$('lecturerDate')?.value, file=$('lecturerSignature')?.files?.[0];
-            if(!decision || !date || !file || !file.size || !$('documentsChecked')?.checked || (decision==='recognized'&&!grade) || (decision==='not-recognized'&&!reason) || !/\.(pdf|png|jpe?g)$/i.test(file.name) || file.size>5*1024*1024){
-                error($('lecturerDecisionForm'),'Select a decision, date, correct grade or reason, and a signature (PDF/JPG/PNG, max 5 MB).');return;
-            }
-            const db=getDB();const app=db.applications.find(a=>a.id===id);const mod=app&&getModules(app)[index];
-            if(!app||!mod||person?.role!=='lecturer'||!eligible(app,mod,reviewer)){error($('lecturerDecisionForm'),'You cannot review this module.');return;}
-            const entry={reviewer,decision,grade:decision==='recognized'?grade:'',reason:decision==='not-recognized'?reason:'',documentsChecked:true,date,signatureFileName:file.name};
-            mod.lecturerReviews=mod.lecturerReviews||[];mod.lecturerReviews.push(entry);
-            if(!Array.isArray(app.modules))app.modules=[mod];
-            if(decision==='not-recognized')app.status='Lecturer rejected';
-            else if(allApproved(app))app.status='Lecturer approved';
-            else app.status='Pending review';
-            // Retain compatibility with the original single-module reviewer state.
-            app.lecturerReviews=[...new Map(app.modules.flatMap(m=>m.lecturerReviews||[]).map(r=>[r.reviewer,r])).values()];
-            app.assignedLecturers=allReviewers(app);
-            (app.reviewNotifications||[]).filter(n=>n.moduleIndex===index&&n.reviewer===reviewer).forEach(n=>n.acknowledged=true);
-            const message=decision==='recognized'?`Grade: ${grade}`:reason;
-            app.decisions=app.decisions||[];app.decisions.push({by:reviewer,action:decision==='recognized'?'Recognized':'Not recognized',comment:`${mod.targetCourse}. ${message}`,date});
-            historyEvent(app,decision==='recognized'?'Lecturer approved':'Lecturer rejected',reviewer,message,mod.targetCourse);
-            setDB(db);location.href='lecturer-dashboard.html';
-        },true);
-    }
-    if (page === 'exam-board.html') {
-        const id=Number(new URLSearchParams(location.search).get('id'));
-        const app=getDB().applications.find(a=>a.id===id);
-        const canFinish=person?.role==='admin' && app?.status==='Lecturer approved' && allApproved(app);
-        if($('boardForm')) $('boardForm').hidden=!canFinish;
-        if(app) $('applicationSummary').textContent=`Application #${id} · ${getModules(app).length} module(s) · ${allApproved(app)?'All lecturer decisions complete':'Waiting for lecturers'}`;
-        $('boardForm')?.addEventListener('submit',event=>{
-            event.preventDefault();event.stopImmediatePropagation();
-            const file=$('boardSignature')?.files?.[0],date=$('boardDate')?.value;
-            if(!canFinish || !date || !file || !file.size || !/\.(pdf|png|jpe?g)$/i.test(file.name) || file.size>5*1024*1024){error($('boardForm'),'Select a valid date and signature file (PDF/JPG/PNG, max 5 MB).');return;}
-            const db=getDB(),item=db.applications.find(a=>a.id===id);
-            if(!item || item.status!=='Lecturer approved' || !allApproved(item))return;
-            item.status='Approved';item.examBoardConfirmation={date,signatureFileName:file.name,reviewer:person.name||person.email};
-            item.decisions=item.decisions||[];item.decisions.push({by:person.name||person.email,action:'Approved',comment:'Examination board confirmation signed.',date});
-            historyEvent(item,'Examination board approved',person.name||person.email,'Final decision issued.');
-            setDB(db);location.href='exam-board-dashboard.html';
-        },true);
-    }
-    // Offer a printable summary immediately after submission.
-    if (page === 'submitted.html' && isStudent) {
-        const id = Number(new URLSearchParams(location.search).get('id'));
-        const submitted = getDB().applications.find(a => a.id === id && a.studentId === person.id);
-        if (submitted) {
-            const actions = document.querySelector('main .actions');
-            if (actions) {
-                const printLink = document.createElement('a');
-                printLink.className = 'btn secondary';
-                printLink.href = `print-application.html?id=${id}`;
-                printLink.textContent = 'Print / Save as PDF';
-                actions.append(printLink);
-            }
-        }
-    }
-    // Student and staff can inspect all module statuses and download a print-ready summary.
-    if (page === 'application.html') {
-        const id=Number(new URLSearchParams(location.search).get('id'));
-        const app=getDB().applications.find(a=>a.id===id);
-        if(app && (app.studentId===person?.id || person?.role==='admin' || (person?.role==='lecturer' && allReviewers(app).includes(chosenReviewer())))){
-            if (getModules(app).length>1) {
-                document.querySelector('.review-group[aria-label="Lecturer decisions"]')?.remove();
-                if (person?.role==='lecturer') $('reviewPanel')?.replaceChildren();
-            }
-            const host=$('applicationDetails');
-            if(host){
-                const moduleSection=document.createElement('section');moduleSection.className='cb-strip';
-                moduleSection.innerHTML=`<h2>Module recognition status</h2>${renderModuleCards(app,true)}`;
-                host.insertAdjacentElement('afterend',moduleSection);
-                const documentsSection=mountSubmittedFiles(app, moduleSection);
-                const paper=document.createElement('a');paper.href=`print-application.html?id=${id}`;paper.className='btn secondary cb-no-print';paper.textContent='Print / Save as PDF';
-                host.prepend(paper);
-                const oldHistory = (app.history && app.history.length) ? app.history
-                    : [{label:'Submitted',at:app.submittedAt||'',actor:app.fullName,comment:''},
-                       ...(app.decisions||[]).map(d=>({label:d.action,at:d.date,actor:d.by,comment:d.comment}))];
-                const timeline=document.createElement('section');timeline.className='cb-strip';
-                timeline.innerHTML=`<h2>Application history</h2><div class="cb-timeline">${oldHistory.map(e=>`<div class="cb-event"><strong>${esc(e.label)}${e.module?' · '+esc(e.module):''}</strong><time>${esc(e.at?new Date(e.at).toLocaleString():app.createdAt)}</time><div>${esc(e.actor)} · ${esc(e.comment)}</div></div>`).join('')}</div>`;
-                (documentsSection || moduleSection).insertAdjacentElement('afterend',timeline);
-            }
-        }
-    }
-    // Role-scoped supporting documents: each stored file opens in a NEW browser tab.
-    // Lecturer sees only their assigned modules; the student and examination board see all.
-    function mountSubmittedFiles(app, afterNode, selectedIndex = null) {
-        if (!attachments || !app || !afterNode) return;
-        const access = person && (app.studentId === person.id || person.role === 'admin' ||
-            (person.role === 'lecturer' && allReviewers(app).includes(chosenReviewer())));
-        if (!access) return;
-        let modules = getModules(app).map((module,index) => [index,module]);
-        if (person.role === 'lecturer') modules = modules.filter(([,m]) => required(m).includes(chosenReviewer()));
-        if (selectedIndex !== null) modules = modules.filter(([index]) => index === selectedIndex);
-        const section = document.createElement('section');
-        section.className = 'cb-submitted-documents';
-        section.setAttribute('aria-label', 'Submitted supporting documents');
-        afterNode.insertAdjacentElement('afterend', section);
-        attachments.render(app, section, modules).catch(() => {
-            section.textContent = 'Could not load submitted documents. Browser storage may be unavailable.';
+    const assigned = current.role === 'student'
+        ? all.filter(a => a.studentId === current.id)
+        : current.role === 'lecturer'
+            ? all.filter(a => reviewersForApplication(a).includes(chosenReviewer()))
+            : all;
+    const actionable = a => current.role === 'lecturer'
+        ? canLecturerReview(a)
+        : current.role === 'admin' && queueCategory(a) === 'ready';
+
+    // Lecturer decisions are module-specific. An application awaiting the Examination
+    // Board is not finally approved, but the lecturer's own review is already complete.
+    // Count each assigned module independently so the three lecturer counters agree.
+    const reviewer = current.role === 'lecturer' ? chosenReviewer() : '';
+    const lecturerModuleRequests = current.role === 'lecturer' ? all.flatMap(application => {
+        const modules = Array.isArray(application.modules) && application.modules.length
+            ? application.modules : [{
+                assignedLecturers: reviewersForApplication(application),
+                lecturerReviews: application.lecturerReviews || []
+            }];
+        return modules.flatMap(module => {
+            if (!(module.assignedLecturers || []).includes(reviewer)) return [];
+            // Legacy single-module applications may store the decision at application level.
+            const reviews = (module.lecturerReviews || []).length ? module.lecturerReviews
+                : modules.length === 1 ? (application.lecturerReviews || []) : [];
+            return [{ application, completed: reviews.some(item => item.reviewer === reviewer) }];
         });
-        return section;
-    }
-    if (page === 'lecturer-review.html' && person?.role === 'lecturer') {
-        const id = Number(new URLSearchParams(location.search).get('id'));
-        const index = Number(new URLSearchParams(location.search).get('module') || 0);
-        const app = getDB().applications.find(a => a.id === id);
-        const place = document.getElementById('assignedLecturers');
-        if (app && place) mountSubmittedFiles(app, place, index);
-    }
-    if (page === 'exam-board.html' && person?.role === 'admin') {
-        const id = Number(new URLSearchParams(location.search).get('id'));
-        const app = getDB().applications.find(a => a.id === id);
-        const place = document.getElementById('applicationSummary');
-        if (app && place) mountSubmittedFiles(app, place);
-    }
-    // Replace the staff inbox with a module-level action queue, and show draft-aware student rows.
-    function dashboard() {
-        const body=$('applicationsBody');if(!body || !person)return;
-        const db=getDB();
-        const staff=['employee-dashboard.html','lecturer-dashboard.html','exam-board-dashboard.html'].includes(page);
-        if (!staff) {
-            const applications=db.applications.filter(a=>a.studentId===person.id);
-            body.innerHTML=applications.length?applications.map(a=>`<tr><td>#${a.id}</td><td>${esc(a.originalCourse)}${getModules(a).length>1?` <small>(+${getModules(a).length-1} more)</small>`:''}</td><td>${esc(a.targetCourse)}</td><td><span class="tag ${a.status==='Approved'?'approved':a.status.includes('rejected')?'rejected':''}">${esc(a.status)}</span><div class="muted small">${getModules(a).filter(m=>approvals(m)===required(m).length).length}/${getModules(a).length} modules accepted by lecturers</div></td><td><a class="btn secondary" href="application.html?id=${a.id}">View</a></td></tr>`).join(''):'<tr><td colspan="5">No applications yet.</td></tr>';
-            // Display a dated history overview for every submitted student application.
-            let historyPanel=$('studentHistoryOverview');
-            if(!historyPanel){
-                historyPanel=document.createElement('section');
-                historyPanel.id='studentHistoryOverview';
-                historyPanel.className='card cb-history-overview';
-                historyPanel.setAttribute('aria-label','Application history');
-                const table=body.closest('table');
-                const parent=table?.closest('.table-wrap') || table;
-                parent?.insertAdjacentElement('afterend',historyPanel);
-            }
-            const toEntries = app => (app.history && app.history.length ? app.history : [
-                {label:'Submitted',at:app.submittedAt||'',actor:app.fullName||'',comment:''},
-                ...(app.decisions||[]).map(d=>({label:d.action,at:d.date,actor:d.by,comment:d.comment}))
-            ]).slice().sort((a,b)=>Date.parse(a.at||0)-Date.parse(b.at||0));
-            const displayDate = at => {
-                const parsed = Date.parse(at||'');
-                return Number.isNaN(parsed)?'Date not recorded':new Date(parsed).toLocaleString();
-            };
-            historyPanel.innerHTML='<h2>Application History</h2>' + (applications.length?
-                applications.map(app=>{
-                    const entries=toEntries(app);
-                    const last=entries[entries.length-1];
-                    return `<details class="cb-history-item"><summary><strong>Application #${app.id}</strong> · ${esc(app.status)} <span class="muted small">· Last activity: ${esc(displayDate(last?.at))}</span></summary>
-                        <ol class="cb-history-events">${entries.map(event=>`<li><strong>${esc(event.label)}</strong>${event.module?` · ${esc(event.module)}`:''}<br><time>${esc(displayDate(event.at))}</time> · ${esc(event.actor||'')}<div class="muted small">${esc(event.comment||'')}</div></li>`).join('')}</ol>
-                        <a class="btn secondary" href="application.html?id=${app.id}">View application</a></details>`;
-                }).join('') : '<p class="muted">No application history yet.</p>');
-            return;
+    }) : [];
+    const totalRequests = current.role === 'lecturer' ? lecturerModuleRequests.length : assigned.length;
+    const pendingCount = current.role === 'student'
+        ? assigned.filter(a => ['Pending review', 'Lecturer approved'].includes(a.status)).length
+        : current.role === 'lecturer'
+            ? lecturerModuleRequests.filter(item => !item.completed && item.application.status === 'Pending review').length
+            : assigned.filter(actionable).length;
+    const finalized = current.role === 'lecturer'
+        ? lecturerModuleRequests.filter(item => item.completed).length
+        : assigned.filter(a => ['Approved', 'Rejected', 'Lecturer rejected'].includes(a.status)).length;
+    document.getElementById('stats').innerHTML = `
+        <div class="card"><div class="muted">Total requests</div><div class="number">${totalRequests}</div></div>
+        <div class="card"><div class="muted">${employeePage ? 'Needs your action' : 'In progress'}</div><div class="number">${pendingCount}</div></div>
+        <div class="card"><div class="muted">Finalized</div><div class="number">${finalized}</div>${current.role === 'lecturer' ? '<div class="muted small">Your completed module reviews</div>' : ''}</div>`;
+
+    if (employeePage) {
+        const reviewerPanel = document.getElementById('reviewerPanel');
+        if (reviewerPanel && current.role === 'lecturer') {
+            reviewerPanel.innerHTML = `<label for="reviewerIdentity"><strong>Lecturer notifications</strong></label>
+                <select id="reviewerIdentity" aria-label="Choose lecturer identity"></select>
+                <p class="muted small inbox-note" id="reviewerInboxCount" aria-live="polite"></p>`;
+            const selector = document.getElementById('reviewerIdentity');
+            reviewerList().forEach(name => selector.add(new Option(name, name)));
+            selector.value = chosenReviewer();
+            selector.addEventListener('change', () => {
+                sessionStorage.setItem(REVIEWER_CHOICE_KEY, selector.value);
+                renderDashboard();
+            });
+            const newRequests = assigned.filter(a => canLecturerReview(a));
+            document.getElementById('reviewerInboxCount').textContent =
+                `${newRequests.length} pending notification${newRequests.length === 1 ? '' : 's'} for ${chosenReviewer()}.`;
+        } else if (reviewerPanel) reviewerPanel.replaceChildren();
+
+        const toolbarHost = document.querySelector('.table-wrap');
+        let toolbar = document.getElementById('queueFilters');
+        if (!toolbar && toolbarHost) {
+            toolbar = document.createElement('div');
+            toolbar.id = 'queueFilters';
+            toolbar.className = 'queue-toolbar';
+            toolbar.setAttribute('role', 'group');
+            toolbar.setAttribute('aria-label', 'Filter applications by status');
+            toolbarHost.before(toolbar);
         }
-        const reviewer=chosenReviewer();
-        const lecturer=person.role==='lecturer';
-        const filtered=[];
-        db.applications.forEach(a=>getModules(a).forEach((m,index)=>{
-            if(!lecturer || required(m).includes(reviewer))filtered.push({a,m,index});
-        }));
-        const categories=[['all','All'],['pending','Pending'],['waiting','Waiting for another lecturer'],['ready','Ready for board'],['approved','Approved'],['rejected','Rejected']];
-        let currentFilter=sessionStorage.getItem('creditbridge_v2_filter')||'all';
-        const category=({a,m})=>{
-            if(a.status==='Approved')return 'approved';
-            if(moduleStatus(m,a)==='Rejected'||a.status==='Lecturer rejected')return 'rejected';
-            if(a.status==='Lecturer approved')return 'ready';
-            return approvals(m)>0?'waiting':'pending';
-        };
-        const toolbar=$('cbQueueToolbar') || document.createElement('div');
-        toolbar.id='cbQueueToolbar';toolbar.className='cb-toolbar';
-        $('queueFilters')?.remove();
-        if(!toolbar.isConnected)body.closest('.table-wrap')?.before(toolbar);
-        toolbar.replaceChildren();
-        categories.forEach(([key,label])=>{
-            const btn=document.createElement('button');btn.type='button';btn.className='queue-filter';btn.setAttribute('aria-pressed',String(key===currentFilter));
-            btn.textContent=`${label} (${filtered.filter(row=>key==='all'||category(row)===key).length})`;
-            btn.addEventListener('click',()=>{sessionStorage.setItem('creditbridge_v2_filter',key);dashboard();});toolbar.append(btn);
-        });
-        const visible=filtered.filter(row=>currentFilter==='all'||category(row)===currentFilter);
-        const head=document.querySelector('thead tr');
-        if(head)head.innerHTML='<th scope="col">ID</th><th scope="col">Student</th><th scope="col">Module</th><th scope="col">Lecturer status</th><th scope="col">Actions</th>';
-        body.innerHTML=visible.length?visible.map(({a,m,index})=>{
-            const owner=db.users.find(u=>u.id===a.studentId);
-            const mayReview=lecturer?eligible(a,m,reviewer):index===0&&a.status==='Lecturer approved'&&allApproved(a);
-            const reviewURL=lecturer?`lecturer-review.html?id=${a.id}&module=${index}`:`exam-board.html?id=${a.id}`;
-            return `<tr><td>#${a.id}</td><td>${esc(owner?.name||a.fullName)}</td><td>${esc(m.targetCourse)}<div class="muted small">${esc(m.originalCourse)}</div></td>
-                <td><span class="tag">${esc(moduleStatus(m,a))}</span><div class="muted small">${approvals(m)}/${required(m).length} lecturers approved</div><details><summary>Reviewers</summary>${required(m).map(n=>`<div>${esc(n)}</div>`).join('')}</details></td>
-                <td><a class="btn secondary" href="application.html?id=${a.id}">View</a>${mayReview?` <a class="btn" href="${reviewURL}">Review</a>`:''}</td></tr>`;
-        }).join(''):'<tr><td colspan="5">No modules in this category.</td></tr>';
-        if(lecturer && $('reviewerInboxCount')) $('reviewerInboxCount').textContent=`${filtered.filter(row=>eligible(row.a,row.m,reviewer)).length} review notification(s) for ${reviewer}.`;
-    }
-    if (['student-dashboard.html','employee-dashboard.html','lecturer-dashboard.html','exam-board-dashboard.html'].includes(page)) {
-        dashboard();
-        // The original selector recreates its own DOM; reapply this view afterwards.
-        document.addEventListener('change',event=>{
-            if(event.target?.id==='reviewerIdentity')setTimeout(dashboard,0);
-        },true);
-    }
-    // Print a complete application record. The browser's Save as PDF creates the PDF.
-    if (page === 'print-application.html') {
-        const id = Number(new URLSearchParams(location.search).get('id'));
-        const app = getDB().applications.find(item => item.id === id);
-        const allowed = app && person && (app.studentId === person.id ||
-            person.role === 'admin' ||
-            (person.role === 'lecturer' && allReviewers(app).includes(chosenReviewer())));
-        const target = $('cbPrintBody');
-        if (!target) return;
-        if (!allowed) {
-            target.textContent = 'Application not found or access denied.';
-            $('cbPrintButton')?.setAttribute('disabled', 'disabled');
-            return;
+        const categories = [
+            ['all', 'All'], ['pending', 'Pending'], ['waiting', 'Waiting for other lecturer'],
+            ['ready', 'Ready for board'], ['approved', 'Approved'], ['rejected', 'Rejected']
+        ];
+        if (!categories.some(([key]) => key === employeeQueueFilter)) employeeQueueFilter = 'all';
+        if (toolbar) {
+            toolbar.replaceChildren();
+            categories.forEach(([key, label]) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'queue-filter';
+                button.dataset.queueFilter = key;
+                button.setAttribute('aria-pressed', String(employeeQueueFilter === key));
+                button.textContent = label;
+                const count = document.createElement('small');
+                count.textContent = String(key === 'all' ? assigned.length : assigned.filter(a => queueCategory(a) === key).length);
+                button.append(count);
+                button.addEventListener('click', () => {
+                    employeeQueueFilter = key;
+                    sessionStorage.setItem('creditbridge_queue_filter', key);
+                    renderDashboard();
+                });
+                toolbar.append(button);
+            });
         }
-        const owner = getDB().users.find(account => account.id === app.studentId);
-        const modules = getModules(app);
-        const field = (name, value) => `<dt>${esc(name)}</dt><dd>${esc(value || 'Not provided')}</dd>`;
-        const dateValue = value => {
-            if (!value) return 'Pending';
-            const parsed = new Date(value);
-            return Number.isNaN(parsed.getTime()) ? String(value) : parsed.toLocaleString();
-        };
-        const moduleCards = modules.map((module, index) => {
-            const reviewers = required(module);
-            const decisions = reviewers.map(reviewer => {
-                const record = (module.lecturerReviews || []).find(item => item.reviewer === reviewer);
-                return `<tr><td>${esc(reviewer)}</td><td>${esc(record ? (record.decision === 'recognized' ? 'Approved' : 'Rejected') : 'Pending')}</td><td>${esc(record?.grade || '—')}</td><td>${esc(record?.reason || '—')}</td><td>${esc(record?.date || '—')}</td><td>${esc(record?.signatureFileName || '—')}</td></tr>`;
-            }).join('');
-            const docs = Object.entries(module.documentFileNames || {})
-                .flatMap(([kind, files]) => (Array.isArray(files) ? files : [files]).map(file => `${kind}: ${file}`));
-            return `<section class="cb-print-module">
-                <h3>Module ${index + 1}: ${esc(module.targetCourse || 'Unspecified THD module')}</h3>
-                <dl class="cb-print-fields">
-                    ${field('Previously completed module', module.originalCourseEnglish || module.originalCourseGerman || module.originalCourse)}
-                    ${field('Previous ECTS', module.originalCredits)}
-                    ${field('SWS', module.sws)}
-                    ${field('THD ECTS', module.targetCredits)}
-                    ${field('Module type', module.moduleType)}
-                    ${field('Description', module.description)}
-                    ${field('Supporting documents', docs.join('; ') || 'Not listed')}
-                    ${field('Lecturer review progress', `${approvals(module)} of ${reviewers.length} approved`)}
-                </dl>
-                <h4>Lecturer decisions</h4>
-                <div class="cb-print-table-wrap"><table class="cb-print-table"><thead><tr><th>Lecturer</th><th>Decision</th><th>Grade</th><th>Reason</th><th>Date</th><th>Signature file</th></tr></thead><tbody>${decisions || '<tr><td colspan="6">Lecturer assignment pending</td></tr>'}</tbody></table></div>
-            </section>`;
-        }).join('');
-        const board = app.examBoardConfirmation;
-        const events = (app.history || []).map(item => `<tr><td>${esc(dateValue(item.at))}</td><td>${esc(item.label)}</td><td>${esc(item.actor || '')}</td><td>${esc(item.module || '')}</td><td>${esc(item.comment || '')}</td></tr>`).join('');
-        target.innerHTML = `
-            <p class="cb-print-eyebrow">CREDITBRIDGE / APPLICATION SUMMARY</p>
-            <h1>Credit recognition application #${esc(app.id)}</h1>
-            <p class="cb-print-status"><strong>Status:</strong> ${esc(app.status)} · <strong>Submitted:</strong> ${esc(dateValue(app.submittedAt || app.createdAt))}</p>
-            <h2>Student details</h2>
-            <dl class="cb-print-fields">
-                ${field('Full name', owner?.name || app.fullName)}
-                ${field('Matriculation number', owner?.number || app.matriculationNumber)}
-                ${field('Email', owner?.email || app.studentEmail)}
-                ${field('Previous university', app.institution)}
-                ${field('THD programme', app.program)}
-            </dl>
-            <h2>Requested recognition (${modules.length} module${modules.length === 1 ? '' : 's'})</h2>
-            ${moduleCards}
-            <h2>Student declaration</h2>
-            <dl class="cb-print-fields">${field('Date', app.signatureDate)}${field('Signature file', app.signatureFileName)}</dl>
-            <h2>Examination board</h2>
-            <dl class="cb-print-fields">
-                ${field('Decision', board ? 'Approved' : 'Pending')}
-                ${field('Chairperson', board?.reviewer)}
-                ${field('Date', board?.date)}
-                ${field('Signature file', board?.signatureFileName)}
-            </dl>
-            <h2>Application history</h2>
-            <div class="cb-print-table-wrap"><table class="cb-print-table"><thead><tr><th>Date</th><th>Event</th><th>By</th><th>Module</th><th>Details</th></tr></thead><tbody>${events || '<tr><td colspan="5">No recorded events</td></tr>'}</tbody></table></div>
-            <p class="cb-print-footnote">This summary shows the recorded application status at the time it was generated. Signature file names identify selected files; they are not embedded signatures.</p>`;
-        $('cbPrintButton')?.addEventListener('click', () => window.print());
+        const visible = assigned.filter(a => employeeQueueFilter === 'all' || queueCategory(a) === employeeQueueFilter);
+        const labels = ['ID', 'Student', 'Original course', 'Target course', 'Status', 'Actions'];
+        document.querySelector('thead tr').innerHTML = labels.map(label => `<th scope="col">${label}</th>`).join('');
+        body.innerHTML = visible.length ? visible.map(a => {
+            const owner = db.users.find(u => u.id === a.studentId);
+            const studentName = owner?.name || a.fullName || a.studentEmail || 'Student';
+            const progress = lecturerProgress(a);
+            const canAct = actionable(a);
+            const url = current.role === 'lecturer' ? 'lecturer-review.html' : 'exam-board.html';
+            return `<tr><td>#${a.id}</td><td>${safe(studentName)}</td>
+                <td>${safe(a.originalCourse)}</td><td>${safe(a.targetCourse)}</td>
+                <td><span class="tag ${statusClass(a.status)}">${safe(a.status)}</span>
+                    <div class="muted small">${progress.approved}/${progress.required.length} lecturers approved</div>
+                    <details><summary class="small">View lecturer decisions</summary>${reviewerStatusMarkup(a)}</details>
+                </td><td><a class="btn secondary" href="application.html?id=${a.id}">View</a>
+                ${canAct ? `<a class="btn" href="${url}?id=${a.id}">Review</a>` : ''}</td></tr>`;
+        }).join('') : '<tr><td colspan="6">No applications in this category.</td></tr>';
+    } else {
+        body.innerHTML = assigned.length ? assigned.map(a => {
+            const progress = lecturerProgress(a);
+            return `<tr><td>#${a.id}</td><td>${safe(a.originalCourse)}</td>
+                <td>${safe(a.targetCourse)}</td><td><span class="tag ${statusClass(a.status)}">${safe(a.status)}</span>
+                <div class="muted small">${progress.approved}/${progress.required.length} lecturer approvals</div></td>
+                <td><a class="btn secondary" href="application.html?id=${a.id}">View</a></td></tr>`;
+        }).join('') : '<tr><td colspan="5">No applications here yet.</td></tr>';
     }
-    // Show a live lecturer assignment preview when selecting a THD module.
-    if (page === 'target-module.html') {
-        const picker = $('targetModuleName');
-        const host = $('targetModuleInfo');
-        if (picker && host) {
-            const lecturerPreview = document.createElement('p');
-            lecturerPreview.id = 'lecturerAssignmentPreview';
-            lecturerPreview.className = 'cb-hint';
-            lecturerPreview.setAttribute('aria-live', 'polite');
-            host.insertAdjacentElement('afterend', lecturerPreview);
-            const refresh = () => {
-                const selected = picker.selectedOptions?.[0];
-                const value = selected?.value;
-                if (!value) { lecturerPreview.textContent = ''; return; }
-                const moduleData = Array.isArray(window.THD_MODULES) ? window.THD_MODULES.find(m=>m.id===value) : null;
-                const moduleLabel = moduleData ? `${moduleData.code}: ${moduleData.name}` : selected.textContent.trim();
-                const names = assignedToModule(readDraft().program || '', moduleLabel);
-                lecturerPreview.textContent = names.length ? 'Responsible lecturer(s): '+names.join(', ') : 'Lecturer assignment pending: contact the study centre.';
-            };
-            picker.addEventListener('change', refresh);
-            setTimeout(refresh, 100);
-        }
+}
+renderDashboard();
+
+// Display a single application, including all recorded decisions.
+function renderApplicationDetails() {
+    const details = document.getElementById('applicationDetails');
+    if (!details) return;
+    if (!current) { go('login.html'); return; }
+    const db = getDB();
+    const id = Number(new URLSearchParams(location.search).get('id'));
+    const application = db.applications.find(a => a.id === id);
+    if (!application || (current.role === 'student' && application.studentId !== current.id) ||
+        (current.role === 'lecturer' && !reviewersForApplication(application).includes(chosenReviewer())) ||
+        (current.role !== 'student' && current.role !== 'lecturer' && current.role !== 'admin')) {
+        details.textContent = 'Application not found or access denied.';
+        return;
     }
-})();
+    const owner = db.users.find(u => u.id === application.studentId);
+    details.innerHTML = `
+        <p><b>Application:</b> #${application.id}</p>
+        <p><b>Student:</b> ${safe(owner?.name || application.fullName)}</p>
+        <p><b>Matriculation number:</b> ${safe(owner?.number || application.matriculationNumber)}</p>
+        <p><b>Email:</b> ${safe(owner?.email || application.studentEmail)}</p>
+        <p><b>Programme:</b> ${safe(application.program)}</p>
+        <p><b>Original course:</b> ${safe(application.originalCourse)}</p>
+        <p><b>Institution:</b> ${safe(application.institution)}</p>
+        <p><b>Original ECTS:</b> ${safe(application.originalCredits)}</p>
+        <p><b>Target course:</b> ${safe(application.targetCourse)}</p>
+        <p><b>Target ECTS:</b> ${safe(application.targetCredits)}</p>
+        <p><b>Additional details:</b> ${safe(application.description)}</p>
+        <p><b>Status:</b> <span class="tag ${statusClass(application.status)}">${safe(application.status)}</span></p>
+        <p><b>Lecturer approvals:</b> ${lecturerProgress(application).approved}/${lecturerProgress(application).required.length}</p>
+        <p><b>Assigned lecturers:</b> ${lecturerProgress(application).required.map(safe).join(', ')}</p>`;
+    // Make each assigned lecturer's decision visible to the student and staff reviewer.
+    const reviewerDetails = document.createElement('section');
+    reviewerDetails.className = 'review-group';
+    reviewerDetails.setAttribute('aria-label', 'Lecturer decisions');
+    reviewerDetails.innerHTML = `<h3>Lecturer decisions</h3>${reviewerStatusMarkup(application)}`;
+    details.insertAdjacentElement('afterend', reviewerDetails);
+    const history = document.getElementById('decisionHistory');
+    const decisions = application.decisions || [];
+    history.innerHTML = decisions.length ? decisions.map(d => `
+        <div class="notice ${d.action === 'Approved' ? 'success' : ''}">
+            <b>${safe(d.by)}: ${safe(d.action)}</b>
+            <p>${safe(d.comment)}</p><small>${safe(d.date)}</small>
+        </div>`).join('') : '<p class="muted">No decisions yet.</p>';
+    const panel = document.getElementById('reviewPanel');
+    if (panel && current.role === 'lecturer' && canLecturerReview(application)) {
+        panel.innerHTML = `<a class="btn" href="lecturer-review.html?id=${id}">Open lecturer review</a>`;
+    } else if (panel && current.role === 'admin' && application.status === 'Lecturer approved' && hasAllLecturerApprovals(application)) {
+        panel.innerHTML = `<a class="btn" href="exam-board.html?id=${id}">Open examination board</a>`;
+    }
+}
+renderApplicationDetails();
