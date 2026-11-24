@@ -18,6 +18,8 @@
   const next = ['document-catalogue.html', 'document-course.html', 'document-other.html', 'target-module.html'];
   const ids = ['gradeSheetFiles', 'moduleCatalogueFiles', 'courseDescriptionFiles', 'otherSupportingFiles'];
   const listIds = ['gradeSheetPreview', 'moduleCataloguePreview', 'courseDescriptionPreview', 'otherSupportingPreview'];
+  const mandatory = [0, 2];
+  const isMandatory = mandatory.includes(index);
   const names = [
     'Copy of certificate of performance (grade sheet)',
     'Annotated module catalogue',
@@ -38,7 +40,8 @@
   if (!input || !checked || !list || !error) return;
   if (contact) contact.value = draft.moduleContact || '';
   if (other) other.value = draft.otherDocuments || '';
-  checked.checked = (draft.documentTypes || []).includes(names[index]);
+  checked.checked = isMandatory || (draft.documentTypes || []).includes(names[index]);
+  if (isMandatory) checked.disabled = true;
 
   // The file input cannot be prefilled after a page reload. Keep actual File objects
   // separate from saved display-only names so Preview is never a broken button.
@@ -87,6 +90,18 @@
     });
   }
 
+  async function readFilesForStep(step) {
+    const db = await database;
+    if (!db) return [];
+    return new Promise(resolve => {
+      try {
+        const request = db.transaction('files', 'readonly').objectStore('files').get(key + ':' + ids[step]);
+        request.onsuccess = () => resolve(Array.isArray(request.result) ? request.result : []);
+        request.onerror = () => resolve([]);
+      } catch (_) { resolve([]); }
+    });
+  }
+
   async function writeStoredFiles(files) {
     const db = await database;
     if (!db) return false;
@@ -117,11 +132,12 @@
     // Keep unrelated fields updated by other pages, while applying this page's state.
     draft = { ...current, ...draft };
     const types = new Set(draft.documentTypes || []);
-    if (checked.checked) types.add(names[index]); else types.delete(names[index]);
+    if (isMandatory || checked.checked) types.add(names[index]); else types.delete(names[index]);
     draft.documentTypes = [...types];
     if (!draft.documentFileNames) draft.documentFileNames = {};
     const files = selectedFiles();
-    if (files.length) draft.documentFileNames[ids[index]] = files.map(file => file.name);
+    // An explicitly edited empty list also clears a previously stored filename.
+    if (manualFiles !== null || files.length) draft.documentFileNames[ids[index]] = files.map(file => file.name);
     if (!checked.checked) draft.documentFileNames[ids[index]] = [];
     if (contact) draft.moduleContact = contact.value.trim();
     if (other) draft.otherDocuments = other.value.trim();
@@ -291,13 +307,13 @@
       queueFiles(remaining);
       draft.documentFileNames ||= {};
       draft.documentFileNames[ids[index]] = remaining.map(file => file.name);
-      if (!remaining.length) checked.checked = false;
+      if (!remaining.length && !isMandatory) checked.checked = false;
     } else {
       // Old drafts can contain filenames without any stored file content.
       const remaining = oldNames.filter((_, i) => i !== position);
       draft.documentFileNames ||= {};
       draft.documentFileNames[ids[index]] = remaining;
-      if (!remaining.length) checked.checked = false;
+      if (!remaining.length && !isMandatory) checked.checked = false;
       manualFiles = [];
       queueFiles([]);
     }
@@ -322,6 +338,10 @@
 
   async function advance(skip) {
     show('');
+    if (skip && isMandatory) {
+      show('This document is required. Upload at least one file to continue.');
+      return;
+    }
     if (skip) {
       checked.checked = false;
       input.value = '';
@@ -333,7 +353,9 @@
     if (selectedFiles().length) checked.checked = true;
     // Do not treat a legacy filename as an uploaded document.
     if (checked.checked && !selectedFiles().length) {
-      show('Please select the document again. Only its filename was saved in the older version.');
+      show(isMandatory && !savedNames().length
+        ? 'This document is required. Upload at least one file to continue.'
+        : 'Please select the document again. Only its filename was saved in the older version.');
       return;
     }
     save();
@@ -346,7 +368,20 @@
     }
     if (index === 3) {
       const chosen = draft.documentTypes || [];
-      if (!chosen.length) { show('Choose at least one document category and attach a file.'); return; }
+      for (const requiredIndex of mandatory) {
+        const filenameList = (draft.documentFileNames || {})[ids[requiredIndex]] || [];
+        if (!chosen.includes(names[requiredIndex]) || !filenameList.length) {
+          show('Grade sheet and course description are mandatory. Open the missing step and upload a file.');
+          return;
+        }
+        // A saved filename without the original file cannot be submitted.
+        const stored = await readFilesForStep(requiredIndex);
+        if (stored.length !== filenameList.length ||
+            !stored.every((file, fileIndex) => file instanceof Blob && file.size > 0 && file.name === filenameList[fileIndex])) {
+          show('Please reopen the required grade sheet or course description step and select the file again.');
+          return;
+        }
+      }
       for (let i = 0; i < names.length; i++) {
         if (chosen.includes(names[i]) && !((draft.documentFileNames || {})[ids[i]] || []).length) {
           show('A selected category has no document. Open that category and upload a file.');
@@ -369,6 +404,7 @@
     show('');
   });
   checked.addEventListener('change', () => {
+    if (isMandatory) checked.checked = true;
     if (!checked.checked) { input.value = ''; manualFiles = []; queueFiles([]); }
     save();
     render();
@@ -378,14 +414,16 @@
   document.getElementById('documentStepForm').addEventListener('submit', event => {
     event.preventDefault(); advance(false);
   });
-  document.getElementById('docSkip').addEventListener('click', () => advance(true));
+  document.getElementById('docSkip')?.addEventListener('click', () => advance(true));
   document.getElementById('docSave').addEventListener('click', async () => {
-    if (checked.checked && !selectedFiles().length) { show('Please select the document again or deselect this category.'); return; }
+    if (!isMandatory && checked.checked && !selectedFiles().length) { show('Please select the document again or deselect this category.'); return; }
     const issue = validate();
     if (issue) { show(issue); return; }
     save();
     const persisted = await pendingWrite;
-    show(persisted ? 'Draft saved.' : 'Draft details saved. File preview may not be available after leaving this page.');
+    show(persisted
+      ? (isMandatory && !selectedFiles().length ? 'Draft saved. Upload this required document before continuing.' : 'Draft saved.')
+      : 'Draft details saved. File preview may not be available after leaving this page.');
   });
   async function navigateTo(event, enforceFiles) {
     if (enforceFiles && checked.checked && !selectedFiles().length) {
