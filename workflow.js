@@ -56,6 +56,14 @@
     };
     const itemsFromDraft = draft => Array.isArray(draft.moduleEntries) ? [...draft.moduleEntries] : [];
     const attachments = window.CreditBridgeAttachments || null;
+    const mandatoryDocumentFields = [
+        ['gradeSheetFiles', 'Copy of certificate of performance (grade sheet)', 'grade sheet'],
+        ['courseDescriptionFiles', 'Contact info of person(s) responsible for the module and a link to the course description', 'course description']
+    ];
+    const missingMandatoryDocuments = item => mandatoryDocumentFields
+        .filter(([id, type]) => !(item.documentTypes || []).includes(type) ||
+            !Array.isArray(item.documentFileNames?.[id]) || !item.documentFileNames[id].length)
+        .map(([, , label]) => label);
     const attachmentError = 'Supporting documents could not be saved. Reload this page and upload the files again.';
     const makeModuleFromDraft = draft => ({
         originalCourse: draft.moduleEnglish || draft.moduleGerman || '',
@@ -226,6 +234,11 @@
                 const state = readDraft();
                 if (!selected?.value || !category) {error(form,'Select a THD module and its module type.');return false;}
                 if (!(state.moduleEnglish || state.moduleGerman)?.trim() || !(Number(state.ects)>0) || (state.sws && Number(state.sws)<0)) {error(form,'Enter a previous course name and valid ECTS/SWS values.');return false;}
+                const missingDocs = missingMandatoryDocuments(state);
+                if (missingDocs.length) {
+                    error(form, 'Required documents missing: ' + missingDocs.join(' and ') + '. Upload them in the supporting-document steps.');
+                    return false;
+                }
                 state.targetModule = selected.textContent.trim();
                 state.targetModuleId = selected.value;
                 state.targetModuleEcts = $('targetModuleInfo')?.textContent.match(/\d+(?:[.,]\d+)?\s+ECTS/i)?.[0]?.replace(/\s+ECTS/i,'') || state.targetModuleEcts || '';
@@ -386,6 +399,11 @@
             const draft=readDraft();
             const modules=itemsFromDraft(draft);
             if(!draft.university || !draft.program || !modules.length){error(form,'Complete all application steps first.');return;}
+            const incompleteModule = modules.find(module => missingMandatoryDocuments(module).length);
+            if (incompleteModule) {
+                error(form, 'Missing required grade sheet or course description for ' + (incompleteModule.targetCourse || incompleteModule.originalCourse || 'a course') + '. Edit the module and upload the documents.');
+                return;
+            }
             const unassigned=modules.filter(m=>!Array.isArray(m.assignedLecturers)||!m.assignedLecturers.length);
             if(unassigned.length){error(form,'Lecturer assignment is missing for: '+unassigned.map(m=>m.targetCourse).join(', ')+'. Please contact the study centre.');return;}
             // Upload names are not enough. Submit only if every listed file is genuinely stored.
