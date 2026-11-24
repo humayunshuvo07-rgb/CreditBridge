@@ -5,8 +5,8 @@ function getDB(){
     function freshDB(){
         const fresh={users:[
             {id:1,username:'shuvo07',firstName:'Shuvo',lastName:'',name:'Shuvo',number:'',email:'shuvo07',password:'12345678',role:'student'},
-            {id:2,name:'Demo Lecturer',email:'lecturer@demo.test',password:'123',role:'lecturer'},
-            {id:3,name:'Study Center',email:'admin@demo.test',password:'123',role:'admin'}
+            {id:2,name:'Demo Lecturer',email:'lecturer',password:'123',role:'lecturer'},
+            {id:3,username:'admin',name:'CreditBridge Admin',email:'admin',password:'123',role:'admin'}
         ],applications:[],nextUser:4,nextApplication:1};
         setDB(fresh);
         return fresh;
@@ -44,7 +44,7 @@ function getDB(){
             // Keep demo employee accounts usable after updates in the same browser.
             data.users.forEach(u => {
                 if (u.email === 'lecturer@demo.test' && u.role === 'lecturer') u.password = '123';
-                if (u.email === 'admin@demo.test' && u.role === 'admin') u.password = '123';
+                if (u.email === 'admin@demo.test' && u.role === 'admin') { u.username = 'admin'; u.password = '123'; }
             });
             setDB(data);
             return data;
@@ -497,15 +497,17 @@ document.querySelectorAll('nav a[href="apply.html"]').forEach(link => {
 });
 document.getElementById('logoutNav')?.addEventListener('click',e=>{e.preventDefault();sessionStorage.removeItem('creditbridge_uid');go('index.html');});
 const register=document.getElementById('registerForm');if(register){go('login.html?role=student');}
-// Both roles sign in on login.html; register.html is only for creating student accounts.
-// The role is validated after the user selects Student or Employee.
+// Student and Employee share one sign-in form; Examination Board uses Employee.
+// Registration is not part of the demo login flow.
 const login = document.getElementById('loginForm');
 
-// On login.html, choose Student or Employee first, then show the sign-in form.
+// Show the sign-in form for the selected role.
 const roleSelection = document.getElementById('roleSelection');
 const roleSignIn = document.getElementById('roleSignIn');
 if (roleSelection && roleSignIn) {
-    const chosenRole = new URLSearchParams(location.search).get('role');
+    const requestedRole = new URLSearchParams(location.search).get('role');
+    // Old bookmarks for the removed Admin button open the normal Employee form.
+    const chosenRole = requestedRole === 'admin' ? 'employee' : requestedRole;
     const validRole = chosenRole === 'student' || chosenRole === 'employee';
     roleSelection.classList.toggle('hidden', validRole);
     roleSignIn.classList.toggle('hidden', !validRole);
@@ -513,6 +515,8 @@ if (roleSelection && roleSignIn) {
         document.getElementById('loginRole').value = chosenRole;
         document.getElementById('signInRoleHeading').textContent =
             chosenRole === 'student' ? 'STUDENT ACCESS' : 'EMPLOYEE ACCESS';
+        const identifierLabel = document.getElementById('loginIdentifierLabel');
+        if (identifierLabel) identifierLabel.textContent = 'Email or Username';
         document.getElementById('studentSignupLink')?.classList.toggle(
             'hidden', chosenRole !== 'student'
         );
