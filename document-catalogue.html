@@ -19,6 +19,8 @@
     .doc-upload input {margin:10px 0;max-width:100%}
     .doc-option {display:flex;align-items:center;gap:10px;margin:16px 0;padding:13px 16px;border:1px solid #cfdfe9;border-radius:9px;cursor:pointer;font-weight:600}.doc-option:has(input:checked){background:#e6f5ff;border-color:#0187c8}
     .doc-note {color:#536780;font-size:14px}
+    .doc-required-marker {font-size:12px;font-weight:700;color:#075e91;white-space:nowrap;margin-left:8px}
+    .doc-option input[disabled] {opacity:1;accent-color:#0187c8;cursor:not-allowed}
     .supporting-title {font-size:18px;line-height:1.4;margin:22px 0 12px;font-weight:700}
     .doc-page-actions {display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
   </style>
@@ -42,7 +44,7 @@
       <h1 class="wizard-step-title">Annotated module catalogue</h1>
       <nav class="doc-steps" aria-label="Document steps"><a class="doc-step-button" href="documents.html">1. Grade sheet</a><a class="doc-step-button active" href="document-catalogue.html" aria-current="step">2. Annotated module catalogue</a><a class="doc-step-button" href="document-course.html">3. Course description</a><a class="doc-step-button" href="document-other.html">4. Other supporting documents</a></nav>
       <h2 class="supporting-title">Recognition is not possible without supporting documents! The following supporting documents are enclosed:</h2>
-      <p class="doc-note">Select at least one category and upload a document. Unselected categories may be skipped.</p>
+      <p class="doc-note">Grade sheet and course description are required. Upload at least one file for each. The other categories are optional.</p>
       <form id="documentStepForm">
         <label class="doc-option"><input id="docChosen" type="checkbox"> Annotated module catalogue</label>
         <div class="doc-upload">
