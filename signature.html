@@ -1,0 +1,437 @@
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
+<html lang="en">
+    <!-- Start page metadata and resources. -->
+    <head>
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
+        <title>
+            Student signature | CreditBridge
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Shared application workflow components. -->
+    <link rel="stylesheet" href="css/workflow.css">
+    <!-- Finish the browser settings. -->
+        <link rel="stylesheet" href="css/frontend-completion.css">
+    <link rel="stylesheet" href="css/final-polish.css">
+    <link rel="stylesheet" href="css/safety-ux.css">
+    <link rel="stylesheet" href="css/language.css"/>
+</head>
+    <!-- Start content shown in the browser. -->
+    <body data-wizard-step="8">
+        <!-- Start the common website header. -->
+        <header>
+            <!-- Create the main navigation menu. -->
+            <nav class="nav">
+                <!-- Link to the homepage page. -->
+                <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
+                    CREDIT
+                    <!-- Create the b element. -->
+                    <b>
+                        <!-- Visible page text: BRIDGE. -->
+                        BRIDGE.
+                    <!-- Close the b element. -->
+                    </b>
+                <!-- End the link. -->
+                </a>
+                <!-- Group the navigation links. -->
+                <div class="links">
+                    <!-- Link to the homepage page. -->
+                    <a href="index.html">
+                        <!-- Visible page text: Home -->
+                        Home
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the process explanation page. -->
+                    <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
+                        How it works
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the university selection page. -->
+                    <a aria-current="page" href="apply.html">
+                        <!-- Visible page text: New application -->
+                        New application
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the login page. -->
+                    <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
+                        Login
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
+                        Logout
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End navigation. -->
+            </nav>
+        <!-- End the page header. -->
+        </header>
+        <!-- Start the main page content. -->
+        <main>
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
+            <section class="wrap">
+                <!-- Create a styled content panel. -->
+                <div class="panel form university-panel">
+                    <!-- Create a layout container. -->
+                    <div id="signatureStep">
+                        <!-- Create a layout container. -->
+                        <div class="eyebrow">
+                            <!-- Visible page text: NEW APPLICATION &middot; STEP 8 OF 8 -->
+                            NEW APPLICATION &middot; STEP 8 OF 8
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Display a section heading. -->
+                        <h1 class="wizard-step-title" id="signatureHeading" tabindex="-1">
+                            <!-- Visible page text: Date and student signature -->
+                            Date and student signature
+                        <!-- End the section heading. -->
+                        </h1>
+                        <!-- Start the signatureForm form. -->
+                        <form id="signatureForm">
+                            <!-- Group a label and form field. -->
+                            <div class="field">
+                                <!-- Label the student signature date field. -->
+                                <label for="studentSignatureDate">
+                                    <!-- Visible page text: Date -->
+                                    Date
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Provide an input for student signature date. -->
+                                <input id="studentSignatureDate" name="studentSignatureDate" required="" type="date"/>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Group a label and form field. -->
+                            <div class="field signature-upload">
+                                <!-- Label the signed document field. -->
+                                <label for="studentSignatureFile">
+                                    <!-- Visible page text: Student signature (JPG, PNG or PDF) -->
+                                    Student signature (JPG, PNG or PDF)
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Provide an input for signed document. -->
+                                <input accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" aria-describedby="signatureFilePreview" id="studentSignatureFile" name="studentSignatureFile" required="" type="file"/>
+                                <!-- Display instructions, descriptions, or status text. -->
+                                <p aria-live="polite" class="muted small" id="signatureFilePreview">
+                                    <!-- Visible page text: No file selected -->
+                                    No file selected
+                                <!-- End the paragraph. -->
+                                </p>
+                                <!-- Create an interactive page button. -->
+                                <button class="upload-clear" hidden="" id="clearSignatureFile" type="button">
+                                    <!-- Visible page text: Clear selected file -->
+                                    Clear selected file
+                                <!-- End the button. -->
+                                </button>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Display instructions, descriptions, or status text. -->
+                            <p class="notice hidden" id="signatureMessage" role="alert">
+                            <!-- End the paragraph. -->
+                            </p>
+                            <!-- Arrange the Back and Next buttons. -->
+                            <div class="actions university-navigation">
+                                <!-- Link to the application review page. -->
+                                <a class="btn secondary" href="review.html" id="backToReview">
+                                    <!-- Visible page text: &larr; Back -->
+                                    &larr; Back
+                                <!-- End the link. -->
+                                </a>
+                                <!-- Create the form submission button. -->
+                                <button class="btn" type="submit">
+                                    <!-- Visible page text: Submit -->
+                                    Submit
+                                <!-- End the button. -->
+                                </button>
+                            <!-- End this layout container. -->
+                            </div>
+                        <!-- End the form. -->
+                        </form>
+                    <!-- End this layout container. -->
+                    </div>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End this section. -->
+            </section>
+        <!-- End the main content. -->
+        </main>
+        <!-- Load existing site behaviour from app.js. -->
+        <script src="js/app.js">
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // This file owns only its own step. The shared external JS and CSS are unchanged.
+                // Read the currently signed-in user.
+                const student = user();
+                // Check a condition before continuing.
+                if (!student || student.role !== 'student') {
+                    // Navigate to the next appropriate page.
+                    window.location.replace('login.html?role=student');
+                    // Return from the current function.
+                    return;
+                // Finish this code block or expression.
+                }
+                // Create the local draft key for this student.
+                const draftKey = 'creditbridge_application_draft_' + student.id;
+                // Prepare the application draft data.
+                let draft = {};
+                // Handle stored data safely.
+                try {
+                    // Read previously saved application information.
+                    const saved = JSON.parse(localStorage.getItem(draftKey) || '{}');
+                    // Check a condition before continuing.
+                    if (saved && typeof saved === 'object' && !Array.isArray(saved)) draft = saved;
+                // Finish this code block or expression.
+                } catch (error) { draft = {}; }
+                // Create a shortcut to find page elements.
+                const byId = id => document.getElementById(id);
+                // Define how to save progress between pages.
+                const saveDraft = () => localStorage.setItem(draftKey, JSON.stringify(draft));
+                // Define how to show a validation message.
+                const showError = (id, message) => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = message;
+                    // Show or hide part of the interface.
+                    element.classList.remove('hidden');
+                // Finish this code block or expression.
+                };
+                // Define how to hide a validation message.
+                const clearError = id => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = '';
+                    // Show or hide part of the interface.
+                    element.classList.add('hidden');
+                // Finish this code block or expression.
+                };
+                // PAGE LOGIC START
+                // Step 8: Validate the date and signature before submitting.
+                // Declare a value used by this page.
+                const date = byId('studentSignatureDate');
+                // Declare a value used by this page.
+                const file = byId('studentSignatureFile');
+                // Declare a value used by this page.
+                const preview = byId('signatureFilePreview');
+                // Declare a value used by this page.
+                const clear = byId('clearSignatureFile');
+                // Read or update a form selection.
+                date.value = draft.studentSignatureDate || '';
+                // Declare a value used by this page.
+                const isValidFile = chosen => {
+                    // Check a condition before continuing.
+                    if (!chosen || !/\.(jpe?g|png|pdf)$/i.test(chosen.name)) return false;
+                    // Return from the current function.
+                    return !chosen.type || ['image/jpeg','image/png','application/pdf'].includes(chosen.type);
+                // Finish this code block or expression.
+                };
+                // Declare a value used by this page.
+                const displayFile = () => {
+                    // Declare a value used by this page.
+                    const chosen = file.files[0];
+                    // Update content shown on the page.
+                    preview.textContent = chosen ? chosen.name : 'No file selected';
+                    // Run the next part of this page's behaviour.
+                    clear.hidden = !chosen;
+                    // Run the next part of this page's behaviour.
+                    file.setCustomValidity('');
+                    // Run the next part of this page's behaviour.
+                    clearError('signatureMessage');
+                // Finish this code block or expression.
+                };
+                // Run this handler when the user interacts.
+                file.addEventListener('change', displayFile);
+                // Run this handler when the user interacts.
+                clear.addEventListener('click', () => { file.value = ''; displayFile(); });
+                // Run the next part of this page's behaviour.
+                displayFile();
+                // Run this handler when the user interacts.
+                byId('signatureForm').addEventListener('submit', event => {
+                    // Run the next part of this page's behaviour.
+                    event.preventDefault();
+                    // Check a condition before continuing.
+                    if (!date.value) { date.reportValidity(); return; }
+                    // Declare a value used by this page.
+                    const chosen = file.files[0];
+                    // Check a condition before continuing.
+                    if (!isValidFile(chosen)) {
+                        // Run the next part of this page's behaviour.
+                        file.setCustomValidity('Choose a JPG, PNG or PDF file.');
+                        // Run the next part of this page's behaviour.
+                        showError('signatureMessage', 'Choose a JPG, PNG or PDF file.');
+                        // Run the next part of this page's behaviour.
+                        file.reportValidity();
+                        // Return from the current function.
+                        return;
+                    // Finish this code block or expression.
+                    }
+                    // Check a condition before continuing.
+                    if (!draft.university || !draft.program || !draft.targetModule || !draft.ects ||
+                        // Continue the expression from the preceding line.
+                        (!draft.moduleGerman && !draft.moduleEnglish)) {
+                        // Navigate to the next appropriate page.
+                        location.href = 'apply.html';
+                        // Return from the current function.
+                        return;
+                    // Finish this code block or expression.
+                    }
+                    // Keep the application in CreditBridge's existing browser-based demo database.
+                    // Declare a value used by this page.
+                    const db = getDB();
+                    // Declare a value used by this page.
+                    const id = db.nextApplication++;
+                    // Build the user's displayed full name.
+                    const fullName = [student.firstName, student.lastName].filter(Boolean).join(' ') || student.name || '';
+                    // Declare a value used by this page.
+                    const application = {
+                        // Run the next part of this page's behaviour.
+                        id: id,
+                        // Run the next part of this page's behaviour.
+                        studentId: student.id,
+                        // Run the next part of this page's behaviour.
+                        fullName: fullName,
+                        // Run the next part of this page's behaviour.
+                        matriculationNumber: student.number || '',
+                        // Run the next part of this page's behaviour.
+                        studentEmail: student.email,
+                        // Run the next part of this page's behaviour.
+                        institution: draft.university,
+                        // Run the next part of this page's behaviour.
+                        program: draft.program,
+                        // Run the next part of this page's behaviour.
+                        originalCourse: draft.moduleEnglish || draft.moduleGerman,
+                        // Run the next part of this page's behaviour.
+                        originalCourseGerman: draft.moduleGerman || '',
+                        // Run the next part of this page's behaviour.
+                        originalCourseEnglish: draft.moduleEnglish || '',
+                        // Run the next part of this page's behaviour.
+                        originalCredits: draft.ects,
+                        // Run the next part of this page's behaviour.
+                        sws: draft.sws || '',
+                        // Run the next part of this page's behaviour.
+                        targetCourse: draft.targetModule,
+                        // Run the next part of this page's behaviour.
+                        targetCredits: draft.targetModuleEcts || '',
+                        // Run the next part of this page's behaviour.
+                        moduleType: draft.moduleType || '',
+                        // Run the next part of this page's behaviour.
+                        documentTypes: draft.documentTypes || [],
+                        // Run the next part of this page's behaviour.
+                        documentFileNames: draft.documentFileNames || {},
+                        // Run the next part of this page's behaviour.
+                        description: draft.moduleContact || draft.otherDocuments || '',
+                        // Read or update a form selection.
+                        signatureDate: date.value,
+                        // Run the next part of this page's behaviour.
+                        signatureFileName: chosen.name,
+                        // Each listed lecturer receives a separate review notification in their dashboard.
+                        assignedLecturers: reviewersForApplication({program: draft.program, targetCourse: draft.targetModule}),
+                        lecturerReviews: [],
+                        // Distinct review requests are recorded for each assigned lecturer.
+                        reviewNotifications: reviewersForApplication({program: draft.program, targetCourse: draft.targetModule}).map(name => ({
+                            reviewer: name,
+                            message: 'New credit-recognition request for ' + draft.targetModule,
+                            createdAt: new Date().toISOString(),
+                            acknowledged: false
+                        })),
+                        // Run the next part of this page's behaviour.
+                        status: 'Pending review',
+                        // Run the next part of this page's behaviour.
+                        createdAt: new Date().toLocaleString(),
+                        // Run the next part of this page's behaviour.
+                        decisions: []
+                    // Finish this code block or expression.
+                    };
+                    // Run the next part of this page's behaviour.
+                    db.applications.unshift(application);
+                    // Run the next part of this page's behaviour.
+                    setDB(db);
+                    // Access the browser's existing local demo data.
+                    localStorage.removeItem(draftKey);
+                    // Navigate to the next appropriate page.
+                    location.href = 'submitted.html?id=' + encodeURIComponent(id);
+                // Finish this code block or expression.
+                });
+                // PAGE LOGIC END
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
+        <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/attachment-store.js"></script>
+    <script src="js/workflow.js"></script>
+    <!-- Shared frontend controls and application management. -->
+    <script src="js/frontend-completion.js"></script>
+    <script src="js/final-polish.js"></script>
+    <script src="js/safety-ux.js"></script>
+    <script src="js/language.js"></script>
+</body>
+<!-- Close the HTML document. -->
+</html>

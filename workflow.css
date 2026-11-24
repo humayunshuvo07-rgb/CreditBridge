@@ -1,0 +1,58 @@
+/* CreditBridge v2: reusable multi-module workflow, drafts, review and print. */
+.cb-strip {margin: 16px 0 22px;padding: 18px;background: #f0f8fc;border:1px solid #c8e6f4;border-radius: 9px;}
+.cb-strip h2,.cb-strip h3 {font-size: 20px;margin: 0 0 10px;}
+.cb-list {display:grid;gap:12px;margin:14px 0 20px;padding:0;list-style:none;}
+.cb-module {border:1px solid #dce5eb;border-left:4px solid #007ab5;border-radius:8px;padding:16px;background:white;overflow-wrap:anywhere;}
+.cb-module h3 {font-size:18px;margin:0 0 8px;}
+.cb-meta {color:#516775;font-size:14px;display:flex;flex-wrap:wrap;gap:8px 16px;}
+.cb-module-details {margin-top:10px;}
+.cb-module-details summary {cursor:pointer;color:#006b9e;font-weight:700;}
+.cb-toolbar {display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0;}
+.cb-toolbar .btn {cursor:pointer;}
+.cb-kpis {display:flex;flex-wrap:wrap;gap:16px;margin:14px 0;}
+.cb-kpis span {background:#edf7fc;color:#184f70;padding:6px 12px;border-radius:20px;font-size:14px;}
+.cb-hint {font-size:14px;color:#526778;margin-top:8px;}
+.cb-alert {padding:12px 16px;background:#fff2f0;color:#972a2a;border-left:4px solid #b12731;border-radius:5px;margin:12px 0;}
+.cb-success {padding:12px 16px;background:#e8f7f0;color:#155c40;border-left:4px solid #188454;border-radius:5px;margin:12px 0;}
+.cb-hidden {display:none!important;}
+.cb-paper {max-width:850px;margin:30px auto;padding:38px;border:1px solid #dce5eb;border-radius:9px;background:#fff;}
+.cb-paper h1 {font-size:32px;}
+.cb-paper h2 {font-size:21px;margin-top:28px;}
+.cb-paper dl {display:grid;grid-template-columns:190px 1fr;gap:5px 20px;}
+.cb-paper dt {font-weight:700;}
+.cb-paper dd {margin:0;overflow-wrap:anywhere;}
+.cb-timeline {border-left:3px solid #b3dbea;padding-left:20px;display:grid;gap:15px;margin-top:16px;}
+.cb-event {position:relative;padding:8px 12px;background:#f8fbfd;border-radius:5px;}
+.cb-event::before {content:'';position:absolute;left:-27px;top:16px;width:9px;height:9px;border-radius:50%;background:#007ab5;}
+.cb-event strong {display:block;}
+.cb-event time {color:#516775;font-size:13px;}
+.cb-columns {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.cb-note {margin-top:12px;color:#637480;font-size:14px;}
+@media(max-width:750px){.cb-paper{padding:18px;margin:12px}.cb-paper dl,.cb-columns{grid-template-columns:1fr}.cb-paper dd{margin-bottom:8px}.cb-toolbar >*{flex:1 1 auto}.cb-module{padding:12px}}
+@media print{body{color:black!important;background:white!important;font:12pt/1.4 Arial,sans-serif!important}header,.cb-no-print,.wizard-progress,.actions,.skip-link,footer{display:none!important}.cb-paper{border:0!important;padding:0!important;margin:0!important;box-shadow:none!important;max-width:100%!important}.cb-module{break-inside:avoid;box-shadow:none}.cb-event{break-inside:avoid}@page{size:A4;margin:15mm}}
+
+/* Chronological student application history. */
+.cb-history-overview{margin-top:24px;}
+.cb-history-item{padding:14px 0;border-bottom:1px solid #dbe4eb;}
+.cb-history-item summary{cursor:pointer;line-height:1.6;}
+.cb-history-events{margin:12px 0 18px;padding-left:24px;}
+.cb-history-events li{margin-bottom:14px;padding-left:6px;}
+.cb-history-events time{font-variant-numeric:tabular-nums;}
+@media(max-width:640px){.cb-history-item summary span{display:block;}}
+
+/* Application summary export: readable on screen and A4 PDF. */
+.cb-print-eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:12px;color:#526778;font-weight:700}
+.cb-print-status{padding:12px;background:#eff8fc;border-left:4px solid #0878ad;border-radius:4px}
+.cb-print-module{padding:15px 0;border-top:1px solid #ccdce5;break-inside:avoid-page}
+.cb-print-module h3{font-size:18px;margin:6px 0 14px}
+.cb-print-module h4{margin:16px 0 6px;font-size:14px}
+.cb-print-fields{display:grid;grid-template-columns:minmax(140px,200px) minmax(0,1fr);gap:7px 20px}
+.cb-print-fields dt{font-weight:700;color:#344d5a}
+.cb-print-fields dd{margin:0;overflow-wrap:anywhere}
+.cb-print-table-wrap{overflow-x:auto;margin:12px 0 22px}
+.cb-print-table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.4}
+.cb-print-table th,.cb-print-table td{border:1px solid #ccdce5;padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.cb-print-table th{background:#eff5f8}
+.cb-print-footnote{margin-top:28px;font-size:12px;color:#526778}
+@media(max-width:650px){.cb-print-fields{grid-template-columns:1fr;gap:2px}.cb-print-fields dd{margin-bottom:9px}}
+@media print{.cb-print-table-wrap{overflow:visible}.cb-print-table th{background:#f1f1f1!important;color:#111!important}.cb-print-status{background:#eee!important;color:#111!important}.cb-print-module{break-inside:auto}.cb-print-module h3,.cb-paper h2{break-after:avoid}.cb-print-table tr{break-inside:avoid}.cb-print-footnote{color:#333!important}}

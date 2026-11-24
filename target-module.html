@@ -1,0 +1,1412 @@
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
+<html lang="en">
+    <!-- Start page metadata and resources. -->
+    <head>
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
+        <title>
+            Module recognition at THD | CreditBridge
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Shared application workflow components. -->
+    <link rel="stylesheet" href="css/workflow.css">
+    <!-- Finish the browser settings. -->
+        <link rel="stylesheet" href="css/frontend-completion.css">
+    <link rel="stylesheet" href="css/final-polish.css">
+    <link rel="stylesheet" href="css/safety-ux.css">
+    <link rel="stylesheet" href="css/language.css"/>
+</head>
+    <!-- Start content shown in the browser. -->
+    <body data-wizard-step="6">
+        <!-- Start the common website header. -->
+        <header>
+            <!-- Create the main navigation menu. -->
+            <nav class="nav">
+                <!-- Link to the homepage page. -->
+                <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
+                    CREDIT
+                    <!-- Create the b element. -->
+                    <b>
+                        <!-- Visible page text: BRIDGE. -->
+                        BRIDGE.
+                    <!-- Close the b element. -->
+                    </b>
+                <!-- End the link. -->
+                </a>
+                <!-- Group the navigation links. -->
+                <div class="links">
+                    <!-- Link to the homepage page. -->
+                    <a href="index.html">
+                        <!-- Visible page text: Home -->
+                        Home
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the process explanation page. -->
+                    <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
+                        How it works
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the university selection page. -->
+                    <a aria-current="page" href="apply.html">
+                        <!-- Visible page text: New application -->
+                        New application
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the login page. -->
+                    <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
+                        Login
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
+                        Logout
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End navigation. -->
+            </nav>
+        <!-- End the page header. -->
+        </header>
+        <!-- Start the main page content. -->
+        <main>
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
+            <section class="wrap">
+                <!-- Create a styled content panel. -->
+                <div class="panel form university-panel">
+                    <!-- Create a layout container. -->
+                    <div id="targetModuleStep">
+                        <!-- Create a layout container. -->
+                        <div class="eyebrow">
+                            <!-- Visible page text: NEW APPLICATION &middot; STEP 6 OF 8 -->
+                            NEW APPLICATION &middot; STEP 6 OF 8
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Display a section heading. -->
+                        <h1 class="wizard-step-title" id="targetModuleHeading" tabindex="-1">
+                            <!-- Visible page text: Module recognition at THD -->
+                            Module recognition at THD
+                        <!-- End the section heading. -->
+                        </h1>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p>
+                            <!-- Visible page text: Select the THD module that matches the course you completed in earlier studies. -->
+                            Select the THD module that matches the course you completed in earlier studies.
+                        <!-- End the paragraph. -->
+                        </p>
+                        <!-- Start the targetModuleForm form. -->
+                        <form id="targetModuleForm">
+                            <!-- Group a label and form field. -->
+                            <div class="field">
+                                <!-- Label the THD target module field. -->
+                                <label for="targetModuleName">
+                                    <!-- Visible page text: Select THD module -->
+                                    Matching THD module
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Create the module or programme dropdown. -->
+                                <!-- Search by code or name without changing the saved module selection. -->
+                                <div class="module-search">
+                                    <label for="targetModuleSearch">Search by module name or code</label>
+                                    <input id="targetModuleSearch" type="search" placeholder="Type a module name or code" autocomplete="off" aria-controls="targetModuleName" aria-describedby="targetModuleSearchCount" />
+                                    <p id="targetModuleSearchCount" class="module-search-results" aria-live="polite"></p>
+                                </div>
+                                <select id="targetModuleName" name="targetModule" required="">
+                                    <!-- Define a selectable dropdown option. -->
+                                    <option value="">
+                                        <!-- Visible page text: Select a module -->
+                                        Choose a THD module
+                                    <!-- End the option. -->
+                                    </option>
+                                <!-- End the selection list. -->
+                                </select>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Display instructions, descriptions, or status text. -->
+                            <p aria-live="polite" class="module-details muted" id="targetModuleInfo">
+                            <!-- End the paragraph. -->
+                            </p>
+                            <!-- Group related input choices. -->
+                            <fieldset class="module-type-options">
+                                <!-- Explain the grouped choices. -->
+                                <legend>
+                                    <!-- Visible page text: Module type -->
+                                    Module category (suggested automatically)
+                                <!-- End the option-group title. -->
+                                </legend>
+                                <!-- Make the form option clickable with its text. -->
+                                <label class="document-option">
+                                    <!-- Provide an input for radio. -->
+                                    <input name="moduleType" required="" type="radio" value="Compulsory module"/>
+                                    <!-- Group text for styling or dynamic updates. -->
+                                    <span>
+                                        <!-- Visible page text: Compulsory module -->
+                                        Compulsory module
+                                    <!-- End this inline text container. -->
+                                    </span>
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Make the form option clickable with its text. -->
+                                <label class="document-option">
+                                    <!-- Provide an input for radio. -->
+                                    <input name="moduleType" required="" type="radio" value="AWP-Course"/>
+                                    <!-- Group text for styling or dynamic updates. -->
+                                    <span>
+                                        <!-- Visible page text: AWP-Course (Compulsory elective subject of a general academic nature) -->
+                                        AWP-Course (Compulsory elective subject of a general academic nature)
+                                    <!-- End this inline text container. -->
+                                    </span>
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Make the form option clickable with its text. -->
+                                <label class="document-option">
+                                    <!-- Provide an input for radio. -->
+                                    <input name="moduleType" required="" type="radio" value="FWP-Course"/>
+                                    <!-- Group text for styling or dynamic updates. -->
+                                    <span>
+                                        <!-- Visible page text: FWP-Course (Course-related elective subject) -->
+                                        FWP-Course (Course-related elective subject)
+                                    <!-- End this inline text container. -->
+                                    </span>
+                                <!-- End the form label. -->
+                                </label>
+                                <!-- Make the form option clickable with its text. -->
+                                <label class="document-option">
+                                    <!-- Provide an input for radio. -->
+                                    <input name="moduleType" required="" type="radio" value="Elective module"/>
+                                    <!-- Group text for styling or dynamic updates. -->
+                                    <span>
+                                        <!-- Visible page text: Elective module -->
+                                        Elective module
+                                    <!-- End this inline text container. -->
+                                    </span>
+                                <!-- End the form label. -->
+                                </label>
+                            <!-- End the grouped options. -->
+                            </fieldset>
+                            <!-- Display instructions, descriptions, or status text. -->
+                            <p class="notice hidden" id="targetModuleMessage" role="alert">
+                            <!-- End the paragraph. -->
+                            </p>
+                            <!-- Arrange the Back and Next buttons. -->
+                            <div class="actions university-navigation">
+                                <!-- Link to the supporting documents page. -->
+                                <a class="btn secondary" href="document-other.html" id="backToDocuments">
+                                    <!-- Visible page text: &larr; Back -->
+                                    &larr; Back
+                                <!-- End the link. -->
+                                </a>
+                                <!-- Edit the previous course component in Step 3. -->
+                                <a class="btn secondary" href="module.html" id="editPreviousCourse">Edit course</a>
+                                <!-- Clear the current THD module to choose a different one. -->
+                                <button class="btn secondary" id="editTargetModule" type="button">Edit THD selection</button>
+                                <!-- Create the form submission button. -->
+                                <button class="btn" type="submit">
+                                    <!-- Visible page text: Save course and review &rarr; -->
+                                    Save course and review &rarr;
+                                <!-- End the button. -->
+                                </button>
+                            <!-- End this layout container. -->
+                            </div>
+                        <!-- End the form. -->
+                        </form>
+                        <!-- Store IE and ESE catalogue records as JSON data. -->
+                        <script id="catalogueData" type="application/json">
+{
+  "Industrial Engineering": [
+    {
+      "id": "0",
+      "code": "IE-01",
+      "name": "Analytical Principles of Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "1",
+      "code": "IE-02",
+      "name": "Informatics for Engineering I",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "2",
+      "code": "IE-03 · Lecture",
+      "name": "Chemistry (lecture)",
+      "type": "Compulsory module",
+      "ects": "",
+      "sws": "",
+      "semester": "1–2"
+    },
+    {
+      "id": "part-ie03-lab",
+      "code": "IE-03 · Lab",
+      "name": "Lab Work in Chemistry",
+      "type": "Compulsory module",
+      "ects": "",
+      "sws": "",
+      "semester": "1–2"
+    },
+    {
+      "id": "3",
+      "code": "IE-04",
+      "name": "Principles in Business and Economics",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "6",
+      "semester": "1"
+    },
+    {
+      "id": "4",
+      "code": "IE-1205",
+      "name": "Basics – Scientific Writing",
+      "type": "Compulsory module",
+      "ects": "",
+      "sws": "",
+      "semester": "1"
+    },
+    {
+      "id": "part-ie05-research",
+      "code": "IE-2202",
+      "name": "Scientific Writing, Research Methods and Project Management",
+      "type": "Compulsory module",
+      "ects": "",
+      "sws": "",
+      "semester": "2"
+    },
+    {
+      "id": "5",
+      "code": "IE-06",
+      "name": "Accounting",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "6",
+      "code": "IE-07",
+      "name": "Foreign Language I",
+      "type": "Compulsory module",
+      "ects": "4",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "7",
+      "code": "IE-08",
+      "name": "Mathematics for Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "8",
+      "code": "IE-09",
+      "name": "Informatics for Engineering II",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "9",
+      "code": "IE-10",
+      "name": "Technical Mechanics I",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "10",
+      "code": "IE-2206",
+      "name": "Physics",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "10-lab",
+      "code": "IE-3201",
+      "name": "Lab Work in Physics",
+      "type": "Compulsory module",
+      "ects": "2",
+      "sws": "2",
+      "semester": "3"
+    },
+    {
+      "id": "11",
+      "code": "IE-12",
+      "name": "Compulsory elective subject of a general academic nature (AWP) I",
+      "type": "AWP-Course",
+      "ects": "2",
+      "sws": "2",
+      "semester": "2"
+    },
+    {
+      "id": "12",
+      "code": "IE-13",
+      "name": "Foreign Language II",
+      "type": "Compulsory module",
+      "ects": "2",
+      "sws": "2",
+      "semester": "2"
+    },
+    {
+      "id": "13",
+      "code": "IE-14",
+      "name": "Applied Mathematics",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "14",
+      "code": "IE-15",
+      "name": "Fundamentals of Electrical Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "15",
+      "code": "IE-16",
+      "name": "Intercultural Management",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "16",
+      "code": "IE-17",
+      "name": "Sustainability",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "17",
+      "code": "IE-18",
+      "name": "Business Law",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "18",
+      "code": "IE-19",
+      "name": "Foreign Language III",
+      "type": "Compulsory module",
+      "ects": "4",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "19",
+      "code": "IE-20",
+      "name": "Financing",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "20",
+      "code": "IE-21",
+      "name": "Logistics and Operations Research",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "21",
+      "code": "IE-22",
+      "name": "Technical Mechanics II",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "22",
+      "code": "IE-23",
+      "name": "Energy Technology",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "23",
+      "code": "IE-24",
+      "name": "Fundamentals of Measurement and Control Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "24",
+      "code": "IE-25",
+      "name": "Foreign Language IV",
+      "type": "Compulsory module",
+      "ects": "2",
+      "sws": "2",
+      "semester": "4"
+    },
+    {
+      "id": "25",
+      "code": "IE-26",
+      "name": "Compulsory elective subject of a general academic nature (AWP) II",
+      "type": "AWP-Course",
+      "ects": "2",
+      "sws": "2",
+      "semester": "4"
+    },
+    {
+      "id": "26",
+      "code": "IE-27",
+      "name": "Process Safety",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "5"
+    },
+    {
+      "id": "27",
+      "code": "IE-28",
+      "name": "Applied Measurement and Control Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "5"
+    },
+    {
+      "id": "28",
+      "code": "IE-29",
+      "name": "Plant Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "5"
+    },
+    {
+      "id": "29",
+      "code": "IE-30",
+      "name": "Management",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "5"
+    },
+    {
+      "id": "30",
+      "code": "IE-31",
+      "name": "Renewable Energies",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "5"
+    },
+    {
+      "id": "31",
+      "code": "IE-32",
+      "name": "Project Work",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "6",
+      "semester": "5"
+    },
+    {
+      "id": "32",
+      "code": "IE-33 / IE-34 / IE-35",
+      "name": "Internship including PLV 1 and PLV 2",
+      "type": "Compulsory module",
+      "ects": "30",
+      "sws": "4",
+      "semester": "6"
+    },
+    {
+      "id": "33",
+      "code": "IE-7014",
+      "name": "Bachelor Thesis",
+      "type": "Compulsory module",
+      "ects": "",
+      "sws": "",
+      "semester": "7"
+    },
+    {
+      "id": "part-ie37-communication",
+      "code": "IE-7015",
+      "name": "Applied Communication Techniques",
+      "type": "Compulsory module",
+      "ects": "",
+      "sws": "",
+      "semester": "7"
+    },
+    {
+      "id": "34",
+      "code": "IE-Elective",
+      "name": "Business Planning and Start-Up Management",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "35",
+      "code": "IE-Elective",
+      "name": "Data Acquisition and Processing",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "36",
+      "code": "IE-Elective",
+      "name": "Energy and Resource Efficiency",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "37",
+      "code": "IE-Elective",
+      "name": "Energy Markets",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "38",
+      "code": "IE-Elective",
+      "name": "Globalisation",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "39",
+      "code": "IE-Elective",
+      "name": "Industrial Automation and Information Technology",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "40",
+      "code": "IE-Elective",
+      "name": "Insights into the Corporate World",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "41",
+      "code": "IE-Elective",
+      "name": "Modelling Theory",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "42",
+      "code": "IE-Elective",
+      "name": "Operational Processes",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "43",
+      "code": "IE-Elective",
+      "name": "Process Engineering",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "44",
+      "code": "IE-Elective",
+      "name": "Process Optimization",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    }
+  ],
+  "Energy Systems Engineering": [
+    {
+      "id": "0",
+      "code": "ESE-01",
+      "name": "Analytical Principles of Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "1",
+      "code": "ESE-02",
+      "name": "Informatics for Engineering I",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "2",
+      "code": "ESE-03",
+      "name": "Fundamentals of Electrical Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "3",
+      "code": "ESE-04",
+      "name": "Physics",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "4",
+      "code": "ESE-05",
+      "name": "Chemistry",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "5",
+      "code": "ESE-06",
+      "name": "Foreign Language I",
+      "type": "Compulsory module",
+      "ects": "4",
+      "sws": "4",
+      "semester": "1"
+    },
+    {
+      "id": "6",
+      "code": "ESE-07",
+      "name": "Mathematics for Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "7",
+      "code": "ESE-08",
+      "name": "Informatics for Engineering II",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "8",
+      "code": "ESE-09",
+      "name": "Electrical and Power Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "9",
+      "code": "ESE-10",
+      "name": "Lab work in Natural Sciences",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "10",
+      "code": "ESE-11",
+      "name": "Materials and Design",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "2"
+    },
+    {
+      "id": "11",
+      "code": "ESE-12",
+      "name": "Intercultural competences",
+      "type": "Compulsory module",
+      "ects": "2",
+      "sws": "2",
+      "semester": "2"
+    },
+    {
+      "id": "12",
+      "code": "ESE-13",
+      "name": "Compulsory elective subject of a general academic nature (AWP) I",
+      "type": "AWP-Course",
+      "ects": "2",
+      "sws": "2",
+      "semester": "2"
+    },
+    {
+      "id": "13",
+      "code": "ESE-14",
+      "name": "Foreign Language II",
+      "type": "Compulsory module",
+      "ects": "2",
+      "sws": "2",
+      "semester": "2"
+    },
+    {
+      "id": "14",
+      "code": "ESE-15",
+      "name": "Applied Mathematics",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "15",
+      "code": "ESE-16",
+      "name": "Energy Technology",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "16",
+      "code": "ESE-17",
+      "name": "Measurement and Control Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "17",
+      "code": "ESE-18",
+      "name": "Fundamentals of Energy Economy",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "18",
+      "code": "ESE-19",
+      "name": "Project Work I incl. Scientific Writing",
+      "type": "Compulsory module",
+      "ects": "6",
+      "sws": "6",
+      "semester": "3"
+    },
+    {
+      "id": "19",
+      "code": "ESE-20",
+      "name": "Foreign Language III",
+      "type": "Compulsory module",
+      "ects": "4",
+      "sws": "4",
+      "semester": "3"
+    },
+    {
+      "id": "20",
+      "code": "ESE-21",
+      "name": "Project Work II incl. Simulation and Design",
+      "type": "Compulsory module",
+      "ects": "6",
+      "sws": "6",
+      "semester": "4"
+    },
+    {
+      "id": "21",
+      "code": "ESE-22",
+      "name": "Renewable Energies",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "22",
+      "code": "ESE-23",
+      "name": "Sustainability",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "23",
+      "code": "ESE-24",
+      "name": "Plant Engineering",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "24",
+      "code": "ESE-25",
+      "name": "Compulsory elective subject of a general academic nature (AWP) II",
+      "type": "AWP-Course",
+      "ects": "2",
+      "sws": "2",
+      "semester": "4"
+    },
+    {
+      "id": "25",
+      "code": "ESE-26",
+      "name": "Compulsory Elective I*",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4"
+    },
+    {
+      "id": "26",
+      "code": "ESE-27",
+      "name": "Foreign Language IV",
+      "type": "Compulsory module",
+      "ects": "2",
+      "sws": "2",
+      "semester": "4"
+    },
+    {
+      "id": "27",
+      "code": "ESE-28",
+      "name": "Internship including PLV seminars",
+      "type": "Compulsory module",
+      "ects": "30",
+      "sws": "30",
+      "semester": "5"
+    },
+    {
+      "id": "28",
+      "code": "ESE-29",
+      "name": "Power Grid Technologies",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "6"
+    },
+    {
+      "id": "29",
+      "code": "ESE-30",
+      "name": "Energy Storage",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "6"
+    },
+    {
+      "id": "30",
+      "code": "ESE-31",
+      "name": "Smart Systems and Technologies",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "6"
+    },
+    {
+      "id": "31",
+      "code": "ESE-32",
+      "name": "Compulsory Elective II*",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "6"
+    },
+    {
+      "id": "32",
+      "code": "ESE-33",
+      "name": "Project Work III incl. Lab Work in Energy Systems",
+      "type": "Compulsory module",
+      "ects": "10",
+      "sws": "8",
+      "semester": "6"
+    },
+    {
+      "id": "33",
+      "code": "ESE-34",
+      "name": "Grid Management",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "34",
+      "code": "ESE-35",
+      "name": "Site Planning and GIS",
+      "type": "Compulsory module",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "35",
+      "code": "ESE-36",
+      "name": "Compulsory Elective III*",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "7"
+    },
+    {
+      "id": "36",
+      "code": "ESE-37",
+      "name": "Bachelor thesis",
+      "type": "Compulsory module",
+      "ects": "15",
+      "sws": "14",
+      "semester": "7"
+    },
+    {
+      "id": "37",
+      "code": "ESE-Elective",
+      "name": "Process Engineering",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "6, 7"
+    },
+    {
+      "id": "38",
+      "code": "ESE-Elective",
+      "name": "Advanced Fluid and Energy Technology",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "39",
+      "code": "ESE-Elective",
+      "name": "Principles of Energy Systems Management",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "40",
+      "code": "ESE-Elective",
+      "name": "Operational Processes",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "41",
+      "code": "ESE-Elective",
+      "name": "Computer Simulation in Energy and Resource Economics",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "42",
+      "code": "ESE-Elective",
+      "name": "Energy Economics Policy",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "43",
+      "code": "ESE-Elective",
+      "name": "International Energy Regulations",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "44",
+      "code": "ESE-Elective",
+      "name": "Health Safety Environment",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "45",
+      "code": "ESE-Elective",
+      "name": "Technology and Intellectual Property Rights Management",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "46",
+      "code": "ESE-Elective",
+      "name": "MRO-Strategies and Process Reliability",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "47",
+      "code": "ESE-Elective",
+      "name": "Entrepreneurship",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "48",
+      "code": "ESE-Elective",
+      "name": "Strategic Planning and Project Management",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "49",
+      "code": "ESE-Elective",
+      "name": "Finance and Accounting",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "50",
+      "code": "ESE-Elective",
+      "name": "Safety and Security in Energy Systems",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "51",
+      "code": "ESE-Elective",
+      "name": "Energy and Ressource Efficiency",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    },
+    {
+      "id": "52",
+      "code": "ESE-Elective",
+      "name": "Process Optimization",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "6, 7"
+    },
+    {
+      "id": "53",
+      "code": "ESE-Elective",
+      "name": "Modelling Theory",
+      "type": "FWP-Course",
+      "ects": "5",
+      "sws": "4",
+      "semester": "4, 6, 7"
+    }
+  ]
+}
+</script> <!-- End the script block. -->
+                    <!-- End this layout container. -->
+                    </div>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End this section. -->
+            </section>
+        <!-- End the main content. -->
+        </main>
+        <!-- Load existing site behaviour from app.js. -->
+        <script src="js/app.js">
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // This file owns only its own step. The shared external JS and CSS are unchanged.
+                // Read the currently signed-in user.
+                const student = user();
+                // Check a condition before continuing.
+                if (!student || student.role !== 'student') {
+                    // Navigate to the next appropriate page.
+                    window.location.replace('login.html?role=student');
+                    // Return from the current function.
+                    return;
+                // Finish this code block or expression.
+                }
+                // Create the local draft key for this student.
+                const draftKey = 'creditbridge_application_draft_' + student.id;
+                // Prepare the application draft data.
+                let draft = {};
+                // Handle stored data safely.
+                try {
+                    // Read previously saved application information.
+                    const saved = JSON.parse(localStorage.getItem(draftKey) || '{}');
+                    // Check a condition before continuing.
+                    if (saved && typeof saved === 'object' && !Array.isArray(saved)) draft = saved;
+                // Finish this code block or expression.
+                } catch (error) { draft = {}; }
+                // Create a shortcut to find page elements.
+                const byId = id => document.getElementById(id);
+                // Define how to save progress between pages.
+                const saveDraft = () => localStorage.setItem(draftKey, JSON.stringify(draft));
+                // Define how to show a validation message.
+                const showError = (id, message) => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = message;
+                    // Show or hide part of the interface.
+                    element.classList.remove('hidden');
+                // Finish this code block or expression.
+                };
+                // Define how to hide a validation message.
+                const clearError = id => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = '';
+                    // Show or hide part of the interface.
+                    element.classList.add('hidden');
+                // Finish this code block or expression.
+                };
+                // PAGE LOGIC START
+                // Step 6: Populate only the chosen programme's module catalogue.
+                // Read module entries from the programme guide data.
+                const catalogues = JSON.parse(byId('catalogueData').textContent);
+                // Get modules belonging to the selected programme.
+                const records = catalogues[draft.program] || [];
+                // Check a condition before continuing.
+                if (!records.length) { location.replace('program.html'); return; }
+                // Declare a value used by this page.
+                const select = byId('targetModuleName');
+                // Process the available items one by one.
+                for (const item of records) {
+                    // Declare a value used by this page.
+                    const option = document.createElement('option');
+                    // Read or update a form selection.
+                    option.value = item.id;
+                    // Update content shown on the page.
+                    option.textContent = item.code + ': ' + item.name;
+                    // Run the next part of this page's behaviour.
+                    select.appendChild(option);
+                // Finish this code block or expression.
+                }
+                // Read or update a form selection.
+                select.value = records.some(item => item.id === draft.targetModuleId) ? draft.targetModuleId : '';
+                // Declare a value used by this page.
+                const typeChoices = [...document.querySelectorAll('input[name="moduleType"]')];
+                // Read or update a form selection.
+                typeChoices.forEach(input => { input.checked = input.value === draft.moduleType; });
+                const autoSelectCategory = () => {
+                    const selected = records.find(item => item.id === select.value);
+                    if (selected) {
+                        typeChoices.forEach(input => {
+                            input.checked = input.value === selected.type;
+                            input.removeAttribute('aria-invalid');
+                        });
+                        document.getElementById('targetModuleForm-moduleType-error')?.remove();
+                        clearError('targetModuleMessage');
+                    }
+                };
+                typeChoices.forEach(input => input.addEventListener('change', () => {
+                    if (input.checked) {
+                        document.getElementById('targetModuleForm-moduleType-error')?.remove();
+                        typeChoices.forEach(choice => choice.removeAttribute('aria-invalid'));
+                    }
+                }));
+                // Declare a value used by this page.
+                const detail = byId('targetModuleInfo');
+                // Declare a value used by this page.
+                const renderModule = () => {
+                    // Declare a value used by this page.
+                    const selected = records.find(item => item.id === select.value);
+                    // Update content shown on the page.
+                    detail.textContent = selected
+                        // Continue the expression from the preceding line.
+                        ? [selected.ects && selected.ects + ' ECTS', selected.sws && selected.sws + ' SWS'].filter(Boolean).join(' · ')
+                        // Continue the expression from the preceding line.
+                        : '';
+                // Finish this code block or expression.
+                };
+                // Run this handler when the user interacts.
+                select.addEventListener('change', () => {
+                    // Declare a value used by this page.
+                    const selected = records.find(item => item.id === select.value);
+                    // Check a condition before continuing.
+                    if (selected) {
+                        // Set the suggested module category and remove an outdated error.
+                        autoSelectCategory();
+                    // Finish this code block or expression.
+                    }
+                    // Run the next part of this page's behaviour.
+                    renderModule();
+                // Finish this code block or expression.
+                });
+                // Let students change the selected THD module without losing other draft fields.
+                byId('editTargetModule')?.addEventListener('click', () => {
+                    select.value = '';
+                    const search = byId('targetModuleSearch');
+                    if (search) {
+                        search.value = '';
+                        search.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                    typeChoices.forEach(input => { input.checked = false; });
+                    draft.targetModule = '';
+                    draft.targetModuleId = '';
+                    draft.targetModuleEcts = '';
+                    draft.moduleType = '';
+                    saveDraft();
+                    renderModule();
+                    select.focus();
+                });
+                // Run the next part of this page's behaviour.
+                renderModule();
+                // Restore the suggested category when returning to this page.
+                if (select.value && !typeChoices.some(input => input.checked)) autoSelectCategory();
+                // Run this handler when the user interacts.
+                byId('targetModuleForm').addEventListener('submit', event => {
+                    // Run the next part of this page's behaviour.
+                    event.preventDefault();
+                    // Declare a value used by this page.
+                    const selected = records.find(item => item.id === select.value);
+                    // Declare a value used by this page.
+                    const type = document.querySelector('input[name="moduleType"]:checked');
+                    // Check a condition before continuing.
+                    if (!selected || !type) {
+                        // Run the next part of this page's behaviour.
+                        showError('targetModuleMessage', 'Choose a THD module. Its module category will be selected automatically.');
+                        // Return from the current function.
+                        return;
+                    // Finish this code block or expression.
+                    }
+                    // Run the next part of this page's behaviour.
+                    draft.targetModuleId = selected.id;
+                    // Run the next part of this page's behaviour.
+                    draft.targetModule = selected.code + ': ' + selected.name;
+                    // Run the next part of this page's behaviour.
+                    draft.targetModuleEcts = selected.ects || '';
+                    // Read or update a form selection.
+                    draft.moduleType = type.value;
+                    // Run the next part of this page's behaviour.
+                    saveDraft();
+                    // Navigate to the next appropriate page.
+                    location.href = 'review.html';
+                // Finish this code block or expression.
+                });
+                // PAGE LOGIC END
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
+        <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/attachment-store.js"></script>
+    <script src="js/workflow.js"></script>
+    <!-- Shared frontend controls and application management. -->
+    <script src="js/frontend-completion.js"></script>
+    <script src="js/final-polish.js"></script>
+    <script src="js/safety-ux.js"></script>
+    <script src="js/language.js"></script>
+</body>
+<!-- Close the HTML document. -->
+</html>

@@ -1,0 +1,8 @@
+/* Search results sit below the university input and never cover its text. */
+.university-results{margin-top:6px;border:1px solid #c8d8e7;border-radius:8px;box-shadow:0 8px 18px #19334d18;max-height:240px;overflow-y:auto;background:#fff}
+.university-results[hidden]{display:none!important}
+.university-option{display:block;width:100%;padding:12px 14px;text-align:left;border:0;border-bottom:1px solid #edf1f5;background:#fff;color:#1b2e41;font:inherit;cursor:pointer}
+.university-option:last-child{border-bottom:0}
+.university-option:hover,.university-option:focus-visible{background:#e8f6ff;outline:2px solid #0784c1;outline-offset:-2px}
+.university-results .university-empty{margin:0;padding:12px;color:#566879;font-size:14px}
+#universityName{width:100%;box-sizing:border-box;min-width:0}

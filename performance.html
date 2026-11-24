@@ -1,0 +1,376 @@
+<!DOCTYPE html> <!-- Declare this page as an HTML5 document. -->
+<!-- Set the document language to English. -->
+<html lang="en">
+    <!-- Start page metadata and resources. -->
+    <head>
+        <!-- Use UTF-8 encoding for letters and special symbols. -->
+        <meta charset="utf-8"/>
+        <!-- Fit the page layout to phones and desktops. -->
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <!-- Set the browser tab title. -->
+        <title>
+            Performance in earlier studies | CreditBridge
+        </title> <!-- End the browser tab title. -->
+        <!-- Load the existing shared CSS design file. -->
+        <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Shared application workflow components. -->
+    <link rel="stylesheet" href="css/workflow.css">
+    <!-- Finish the browser settings. -->
+        <link rel="stylesheet" href="css/frontend-completion.css">
+    <link rel="stylesheet" href="css/final-polish.css">
+    <link rel="stylesheet" href="css/safety-ux.css">
+    <link rel="stylesheet" href="css/language.css"/>
+</head>
+    <!-- Start content shown in the browser. -->
+    <body data-wizard-step="4">
+        <!-- Start the common website header. -->
+        <header>
+            <!-- Create the main navigation menu. -->
+            <nav class="nav">
+                <!-- Link to the homepage page. -->
+                <a class="brand" href="index.html">
+                    <!-- Visible page text: CREDIT -->
+                    CREDIT
+                    <!-- Create the b element. -->
+                    <b>
+                        <!-- Visible page text: BRIDGE. -->
+                        BRIDGE.
+                    <!-- Close the b element. -->
+                    </b>
+                <!-- End the link. -->
+                </a>
+                <!-- Group the navigation links. -->
+                <div class="links">
+                    <!-- Link to the homepage page. -->
+                    <a href="index.html">
+                        <!-- Visible page text: Home -->
+                        Home
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the process explanation page. -->
+                    <a href="how-it-works.html">
+                        <!-- Visible page text: How it works -->
+                        How it works
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the university selection page. -->
+                    <a aria-current="page" href="apply.html">
+                        <!-- Visible page text: New application -->
+                        New application
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Link to the login page. -->
+                    <a href="login.html" id="loginNav">
+                        <!-- Visible page text: Login -->
+                        Login
+                    <!-- End the link. -->
+                    </a>
+                    <!-- Group text for styling or dynamic updates. -->
+                    <span aria-live="polite" class="muted small hidden" id="signedInName">
+                    <!-- End this inline text container. -->
+                    </span>
+                    <!-- Link controlled by the site JavaScript. -->
+                    <a class="hidden" href="#" id="logoutNav">
+                        <!-- Visible page text: Logout -->
+                        Logout
+                    <!-- End the link. -->
+                    </a>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End navigation. -->
+            </nav>
+        <!-- End the page header. -->
+        </header>
+        <!-- Start the main page content. -->
+        <main>
+            <!-- Create a layout container. -->
+            <div class="home-return">
+                <!-- Link to the homepage page. -->
+                <a href="index.html">
+                    <!-- Visible page text: &larr; Back to Home -->
+                    &larr; Back to Home
+                <!-- End the link. -->
+                </a>
+            <!-- End this layout container. -->
+            </div>
+            <!-- Start a related content section. -->
+            <section class="wrap">
+                <!-- Create a styled content panel. -->
+                <div class="panel form university-panel">
+                    <!-- Create a layout container. -->
+                    <div id="performanceStep">
+                        <!-- Create a layout container. -->
+                        <div class="eyebrow">
+                            <!-- Visible page text: NEW APPLICATION &middot; STEP 4 OF 8 -->
+                            NEW APPLICATION &middot; STEP 4 OF 8
+                        <!-- End this layout container. -->
+                        </div>
+                        <!-- Display a section heading. -->
+                        <h1 class="wizard-step-title" id="performanceHeading" tabindex="-1">
+                            <!-- Visible page text: Performance in earlier studies -->
+                            Performance in earlier studies
+                        <!-- End the section heading. -->
+                        </h1>
+                        <!-- Display instructions, descriptions, or status text. -->
+                        <p class="muted">
+                            <!-- Visible page text: The performance abroad or in earlier studies was evaluated as follows: -->
+                            The performance abroad or in earlier studies was evaluated as follows:
+                        <!-- End the paragraph. -->
+                        </p>
+                        <!-- Start the performanceForm form. -->
+                        <form id="performanceForm">
+                            <!-- Create a layout container. -->
+                            <div class="form-grid">
+                                <!-- Group a label and form field. -->
+                                <div class="field">
+                                    <!-- Label the weekly semester hours field. -->
+                                    <label for="moduleSws">
+                                        <!-- Visible page text: SWS (semester hours per week) -->
+                                        SWS (semester hours per week)
+                                    <!-- End the form label. -->
+                                    </label>
+                                    <!-- Provide an input for weekly semester hours. -->
+                                    <input id="moduleSws" inputmode="decimal" max="60" min="0" name="sws" placeholder="e.g. 4" step="0.5" type="number"/>
+                                    <!-- Display instructions, descriptions, or status text. -->
+                                    <p class="muted small">
+                                        <!-- Visible page text: If known. SWS = Semesterwochenstunden. -->
+                                        If known. SWS = Semesterwochenstunden.
+                                    <!-- End the paragraph. -->
+                                    </p>
+                                <!-- End this layout container. -->
+                                </div>
+                                <!-- Group a label and form field. -->
+                                <div class="field">
+                                    <!-- Label the ECTS credits field. -->
+                                    <label for="moduleEcts">
+                                        <!-- Visible page text: ECTS credits -->
+                                        ECTS credits
+                                    <!-- End the form label. -->
+                                    </label>
+                                    <!-- Provide an input for ECTS credits. -->
+                                    <input id="moduleEcts" inputmode="decimal" max="60" min="0.5" name="ects" placeholder="e.g. 5" required="" step="0.5" type="number"/>
+                                    <!-- Display instructions, descriptions, or status text. -->
+                                    <p class="muted small">
+                                        <!-- Visible page text: ECTS = European Credit Transfer and Accumulation System. -->
+                                        ECTS = European Credit Transfer and Accumulation System.
+                                    <!-- End the paragraph. -->
+                                    </p>
+                                <!-- End this layout container. -->
+                                </div>
+                            <!-- End this layout container. -->
+                            </div>
+                            <!-- Arrange the Back and Next buttons. -->
+                            <div class="actions university-navigation">
+                                <!-- Link to the previous module details page. -->
+                                <a class="btn secondary" href="module.html" id="backToModule">
+                                    <!-- Visible page text: &larr; Back -->
+                                    &larr; Back
+                                <!-- End the link. -->
+                                </a>
+                                <!-- Create the form submission button. -->
+                                <button class="btn" type="submit">
+                                    <!-- Visible page text: Next &rarr; -->
+                                    Next &rarr;
+                                <!-- End the button. -->
+                                </button>
+                            <!-- End this layout container. -->
+                            </div>
+                        <!-- End the form. -->
+                        </form>
+                    <!-- End this layout container. -->
+                    </div>
+                <!-- End this layout container. -->
+                </div>
+            <!-- End this section. -->
+            </section>
+        <!-- End the main content. -->
+        </main>
+        <!-- THD course credits reference data for automatic suggestions. -->
+        <script src="js/module-credits-data.js"></script>
+        <!-- Load existing site behaviour from app.js. -->
+        <script src="js/app.js">
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // Read the currently signed-in user.
+                const activeUser = user();
+                // Build the user's displayed full name.
+                const fullName = activeUser
+                    // Continue the expression from the preceding line.
+                    ? ([activeUser.firstName, activeUser.lastName].filter(Boolean).join(' ') || activeUser.name || '')
+                    // Continue the expression from the preceding line.
+                    : '';
+                // Declare a value used by this page.
+                const namePlace = document.getElementById('signedInName');
+                // Check a condition before continuing.
+                if (namePlace && fullName) {
+                    // Update content shown on the page.
+                    namePlace.textContent = fullName;
+                    // Show or hide part of the interface.
+                    namePlace.classList.remove('hidden');
+                // Finish this code block or expression.
+                }
+                // Declare a value used by this page.
+                const welcome = document.getElementById('welcome');
+                // Check a condition before continuing.
+                if (welcome && fullName) {
+                    // Update content shown on the page.
+                    welcome.textContent = 'Welcome, ' + fullName + '.';
+                // Finish this code block or expression.
+                }
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+        <!-- Run this page's JavaScript interactions. -->
+        <script>
+            // Start page-specific JavaScript without adding global variables.
+            (() => {
+                // Enable strict JavaScript checks.
+                'use strict';
+                // This file owns only its own step. The shared external JS and CSS are unchanged.
+                // Read the currently signed-in user.
+                const student = user();
+                // Check a condition before continuing.
+                if (!student || student.role !== 'student') {
+                    // Navigate to the next appropriate page.
+                    window.location.replace('login.html?role=student');
+                    // Return from the current function.
+                    return;
+                // Finish this code block or expression.
+                }
+                // Create the local draft key for this student.
+                const draftKey = 'creditbridge_application_draft_' + student.id;
+                // Prepare the application draft data.
+                let draft = {};
+                // Handle stored data safely.
+                try {
+                    // Read previously saved application information.
+                    const saved = JSON.parse(localStorage.getItem(draftKey) || '{}');
+                    // Check a condition before continuing.
+                    if (saved && typeof saved === 'object' && !Array.isArray(saved)) draft = saved;
+                // Finish this code block or expression.
+                } catch (error) { draft = {}; }
+                // Create a shortcut to find page elements.
+                const byId = id => document.getElementById(id);
+                // Define how to save progress between pages.
+                const saveDraft = () => localStorage.setItem(draftKey, JSON.stringify(draft));
+                // Define how to show a validation message.
+                const showError = (id, message) => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = message;
+                    // Show or hide part of the interface.
+                    element.classList.remove('hidden');
+                // Finish this code block or expression.
+                };
+                // Define how to hide a validation message.
+                const clearError = id => {
+                    // Declare a value used by this page.
+                    const element = byId(id);
+                    // Update content shown on the page.
+                    element.textContent = '';
+                    // Show or hide part of the interface.
+                    element.classList.add('hidden');
+                // Finish this code block or expression.
+                };
+                // Match the previous course to the reference catalogue.
+                const normalizeName = value => String(value || '')
+                    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+                const swsInput = byId('moduleSws');
+                const ectsInput = byId('moduleEcts');
+                const status = document.createElement('p');
+                status.id = 'creditAutofillStatus';
+                status.className = 'muted small';
+                status.setAttribute('aria-live', 'polite');
+                const fields = byId('performanceForm');
+                fields.insertBefore(status, fields.firstChild);
+
+                const programme = draft.program || draft.programme || '';
+                const previousEnglish = normalizeName(draft.moduleEnglish);
+                const previousGerman = normalizeName(draft.moduleGerman);
+                const catalogueData = typeof CREDITBRIDGE_REFERENCE_CREDITS !== 'undefined'
+                    ? CREDITBRIDGE_REFERENCE_CREDITS : {};
+                const entries = catalogueData[programme] || [];
+                const matches = item => {
+                    const names = [item.title, item.german, item.code].map(normalizeName);
+                    return Boolean((previousEnglish && names.includes(previousEnglish)) ||
+                        (previousGerman && names.includes(previousGerman)));
+                };
+                // If the programme has not yet been saved, permit an unambiguous name match.
+                let match = entries.find(matches);
+                if (!match && !programme) {
+                    const all = Object.values(catalogueData).flat();
+                    const possible = all.filter(matches);
+                    if (possible.length && possible.every(item =>
+                        item.sws === possible[0].sws && item.ects === possible[0].ects)) {
+                        match = possible[0];
+                    }
+                }
+                const moduleKey = [programme, previousEnglish, previousGerman].join('|');
+                const validCredits = value => value !== undefined && value !== null &&
+                    String(value).trim() !== '';
+                const matchHasCredits = match && (validCredits(match.sws) || validCredits(match.ects));
+                const selectedModuleChanged = draft._creditsReferenceKey !== moduleKey;
+                const previouslyEmpty = !validCredits(draft.sws) && !validCredits(draft.ects);
+                // New selections get catalogue values; old empty failed matches can recover.
+                if (selectedModuleChanged) {
+                    draft.sws = match?.sws ?? '';
+                    draft.ects = match?.ects ?? '';
+                    draft._creditsReferenceKey = moduleKey;
+                    saveDraft();
+                } else if (previouslyEmpty && matchHasCredits) {
+                    draft.sws = match.sws ?? '';
+                    draft.ects = match.ects ?? '';
+                    saveDraft();
+                }
+                swsInput.value = draft.sws ?? '';
+                ectsInput.value = draft.ects ?? '';
+                if (matchHasCredits) {
+                    status.textContent = 'Reference: ' + match.title +
+                        ' (' + match.code + '). Values are editable.';
+                } else if (match) {
+                    status.textContent = 'This course has no separate SWS/ECTS values in the module guide. Enter them manually.';
+                } else {
+                    status.textContent = 'No matching module found. Return to Step 3 to select a listed course, or enter credits manually.';
+                }
+                // Save manual corrections and retain them while the same module is selected.
+                function persistCredits() {
+                    draft.sws = swsInput.value;
+                    draft.ects = ectsInput.value;
+                    draft._creditsReferenceKey = moduleKey;
+                    saveDraft();
+                }
+                swsInput.addEventListener('input', persistCredits);
+                ectsInput.addEventListener('input', persistCredits);
+                byId('performanceForm').addEventListener('submit', event => {
+                    event.preventDefault();
+                    persistCredits();
+                    if (!ectsInput.checkValidity()) {
+                        ectsInput.reportValidity();
+                        return;
+                    }
+                    location.href = 'documents.html';
+                });
+                // PAGE LOGIC END
+            // Finish this code block or expression.
+            })();
+        </script> <!-- End the script block. -->
+    <!-- Finish the visible page. -->
+        <!-- Shared improvements: form help, progress, module search, and accessibility. -->
+    <script src="js/ui-enhancements.js"></script>
+    <!-- Shared multi-module, draft, and decision workflow. -->
+    <script src="js/workflow.js"></script>
+    <!-- Shared frontend controls and application management. -->
+    <script src="js/frontend-completion.js"></script>
+    <script src="js/final-polish.js"></script>
+    <script src="js/safety-ux.js"></script>
+    <script src="js/language.js"></script>
+</body>
+<!-- Close the HTML document. -->
+</html>

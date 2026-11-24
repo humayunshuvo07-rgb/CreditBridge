@@ -1,0 +1,7 @@
+/* Searchable suggestions for the earlier-studies module name fields. */
+.cb-subject-picker { position: relative; width: 100%; }
+.cb-subject-picker > input { width: 100%; }
+.cb-subject-options { position: absolute; z-index: 50; top: 100%; left: 0; right: 0; max-height: 240px; overflow-y: auto; background: #fff; border: 1px solid #9db4cb; border-radius: 8px; box-shadow: 0 8px 20px rgba(25,42,61,.14); }
+.cb-subject-options[hidden] { display: none; }
+.cb-subject-option { display: block; width: 100%; padding: 11px 13px; border: 0; border-bottom: 1px solid #e9eef4; background: #fff; color: #182b3b; text-align: left; cursor: pointer; font: inherit; }
+.cb-subject-option:hover, .cb-subject-option:focus-visible { background: #e7f5ff; outline: 2px solid #008bd2; outline-offset: -2px; }
